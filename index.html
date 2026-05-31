@@ -12,140 +12,190 @@ body{font-family:'Inter',system-ui,sans-serif;background:#0D0E12;color:#F0EDE8;m
 #loading,#error-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:16px;text-align:center;padding:2rem}
 .spinner{width:36px;height:36px;border:3px solid rgba(201,162,74,.15);border-top-color:#C9A24A;border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-#error-wrap .err-icon{font-size:2.5rem}
-#error-wrap p{color:#5A5E6B;max-width:400px;line-height:1.6;font-size:.9rem}
-#app{display:none;max-width:1120px;margin:0 auto;padding:1.5rem 1.25rem 3rem}
+#app{display:none;max-width:1160px;margin:0 auto;padding:1.5rem 1.25rem 3rem}
+
+/* PRINT */
+@media print{
+  body{background:#fff;color:#111}
+  #btn-export,#mes-selector{display:none!important}
+  .header{border-bottom:2px solid #C9A24A!important}
+  .card,.box,.medidas,.projecao,.fontes-box,.diag,.leads-box{break-inside:avoid;border:1px solid #ddd!important;background:#f9f9f9!important}
+  .card .val{color:#111!important}
+  .card.gold .val,.card.verde .val{color:#C9A24A!important}
+  .wordmark,.mes-btn.ativo{color:#C9A24A!important}
+  .alerta{border:1px solid #ccc!important;background:#fff8e1!important;color:#333!important}
+  #alertas-wrap,.funil-bar .fn{color:#111!important}
+  .projecao{background:#fff8e1!important;border:2px solid #C9A24A!important}
+  .funil-bar{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
 
 /* HEADER */
 .header{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:1.75rem;padding-bottom:1.25rem;border-bottom:1px solid rgba(255,255,255,.06)}
 .header-left{display:flex;align-items:center;gap:14px}
 .logo-wrap{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .wordmark{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.1rem;letter-spacing:-.02em;color:#C9A24A}
-.divider{width:1px;height:32px;background:rgba(255,255,255,.08)}
+.divider-v{width:1px;height:32px;background:rgba(255,255,255,.08)}
 .cliente-info .nome{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.1rem;letter-spacing:-.02em}
-.cliente-info .sub{font-size:.72rem;color:#5A5E6B;font-family:'JetBrains Mono',monospace;margin-top:2px;letter-spacing:.05em}
-
-/* MES SELECTOR */
+.cliente-info .sub{font-size:.68rem;color:#5A5E6B;font-family:'JetBrains Mono',monospace;margin-top:2px;letter-spacing:.06em}
+.header-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .mes-selector{display:flex;flex-wrap:wrap;gap:6px}
-.mes-btn{padding:5px 12px;border-radius:5px;font-size:.72rem;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,.08);background:transparent;color:#5A5E6B;transition:all .15s;font-family:'JetBrains Mono',monospace;letter-spacing:.05em}
+.mes-btn{padding:5px 11px;border-radius:5px;font-size:.7rem;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,.08);background:transparent;color:#5A5E6B;transition:all .15s;font-family:'JetBrains Mono',monospace;letter-spacing:.05em}
 .mes-btn.ativo{background:rgba(201,162,74,.1);border-color:rgba(201,162,74,.4);color:#C9A24A}
 .mes-btn:hover:not(.ativo){border-color:rgba(255,255,255,.15);color:#F0EDE8}
+#btn-export{padding:6px 14px;background:rgba(201,162,74,.1);border:1px solid rgba(201,162,74,.3);color:#C9A24A;font-size:.75rem;font-weight:700;border-radius:5px;cursor:pointer;font-family:'JetBrains Mono',monospace;letter-spacing:.06em;white-space:nowrap}
+#btn-export:hover{background:rgba(201,162,74,.18)}
 
 /* ALERTAS */
 .alertas{display:flex;flex-direction:column;gap:8px;margin-bottom:1.25rem}
-.alerta{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-radius:8px;font-size:.82rem;line-height:1.5}
+.alerta{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-radius:8px;font-size:.8rem;line-height:1.5}
 .alerta.vermelho{background:rgba(255,68,68,.06);border:1px solid rgba(255,68,68,.2);color:#ff8888}
 .alerta.amarelo{background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);color:#fbbf24}
-.alerta-icon{font-size:1rem;flex-shrink:0;margin-top:1px}
-.alerta strong{font-weight:700}
 
-/* METRICS */
-.section-label{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:#5A5E6B;letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px}
-.metrics-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:1rem}
+/* SECTION */
+.slabel{font-family:'JetBrains Mono',monospace;font-size:.56rem;color:#5A5E6B;letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px;margin-top:1.25rem}
+.metrics-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:10px}
 .card{background:#161920;border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:.9rem 1.1rem}
 .card .lbl{font-family:'JetBrains Mono',monospace;font-size:.52rem;color:#5A5E6B;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:5px}
-.card .val{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.55rem;letter-spacing:-.03em;line-height:1}
-.card .hint{font-size:.68rem;color:#5A5E6B;margin-top:5px}
+.card .val{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.5rem;letter-spacing:-.03em;line-height:1}
+.card .hint{font-size:.67rem;color:#5A5E6B;margin-top:5px;display:flex;align-items:center;gap:5px}
+.delta{font-size:.68rem;font-weight:700;padding:2px 5px;border-radius:3px}
+.delta.up{background:rgba(68,255,136,.12);color:#44ff88}
+.delta.down{background:rgba(255,102,102,.12);color:#ff6666}
+.delta.flat{background:rgba(255,255,255,.06);color:#5A5E6B}
 .card.gold .val{color:#C9A24A}
 .card.verde .val{color:#44ff88}
 .card.amarelo .val{color:#fbbf24}
 .card.vermelho .val{color:#ff6666}
-.card.destaque{border-color:rgba(201,162,74,.25)}
+.card.destaque{border-color:rgba(201,162,74,.2)}
+
+/* PROJEÇÃO */
+.projecao{background:#0f1119;border:1px solid rgba(201,162,74,.3);border-radius:12px;padding:1.5rem;margin-top:1.25rem;position:relative;overflow:hidden}
+.projecao::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#C9A24A,rgba(201,162,74,.1))}
+.proj-header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:1.25rem}
+.proj-title{font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:1.05rem;letter-spacing:-.02em}
+.proj-title span{color:#C9A24A}
+.proj-status{font-size:.72rem;color:#5A5E6B;font-family:'JetBrains Mono',monospace;letter-spacing:.06em;margin-top:3px}
+.meta-progress{margin-bottom:1.25rem}
+.meta-bar-wrap{background:rgba(255,255,255,.05);border-radius:6px;height:10px;overflow:hidden;margin:8px 0}
+.meta-bar{height:100%;border-radius:6px;transition:width .8s ease;background:linear-gradient(90deg,#C9A24A,#e8c96b)}
+.meta-labels{display:flex;justify-content:space-between;font-size:.68rem;color:#5A5E6B;font-family:'JetBrains Mono',monospace}
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:1.25rem}
+.proj-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:.85rem 1rem}
+.proj-card .pc-lbl{font-family:'JetBrains Mono',monospace;font-size:.52rem;color:#5A5E6B;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+.proj-card .pc-val{font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:1.35rem;letter-spacing:-.03em;color:#F0EDE8}
+.proj-card .pc-hint{font-size:.68rem;color:#5A5E6B;margin-top:3px}
+.proj-card.ouro .pc-val{color:#C9A24A}
+.proj-card.verde .pc-val{color:#44ff88}
+.proj-card.azul .pc-val{color:#60a5fa}
+.funil-reverso{background:rgba(201,162,74,.04);border:1px solid rgba(201,162,74,.12);border-radius:8px;padding:1rem}
+.fr-title{font-family:'JetBrains Mono',monospace;font-size:.56rem;color:#C9A24A;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px}
+.fr-etapas{display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+.fr-etapa{text-align:center;flex:1;min-width:80px}
+.fr-num{font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:1.2rem;color:#F0EDE8}
+.fr-lbl{font-size:.62rem;color:#5A5E6B;margin-top:2px}
+.fr-arrow{color:rgba(201,162,74,.4);font-size:1rem}
+.fr-etapa.final .fr-num{color:#C9A24A}
+.ritmo-box{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.06)}
+.ritmo-item{text-align:center}
+.ritmo-val{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1rem;color:#F0EDE8}
+.ritmo-lbl{font-size:.62rem;color:#5A5E6B;margin-top:2px}
+.proj-meta-atingida{text-align:center;padding:1.5rem}
+.proj-meta-atingida .trophy{font-size:2.5rem;margin-bottom:.5rem}
+.proj-meta-atingida .msg{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.1rem;color:#44ff88}
+.proj-meta-atingida .sub{font-size:.82rem;color:#5A5E6B;margin-top:4px}
 
 /* GRID */
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.25rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:1.25rem}
 @media(max-width:680px){.grid2{grid-template-columns:1fr}}
 .box{background:#161920;border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:1.25rem}
-.box-title{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:#C9A24A;font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin-bottom:1rem}
+.box-title{font-family:'JetBrains Mono',monospace;font-size:.56rem;color:#C9A24A;font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin-bottom:1rem}
 
 /* FUNIL */
 .funil-wrap{display:flex;flex-direction:column;gap:9px}
 .funil-etapa .ftop{display:flex;justify-content:space-between;margin-bottom:4px}
 .funil-etapa .fname{font-size:.75rem;color:#F0EDE8;font-weight:600}
-.funil-etapa .fpct{font-size:.68rem;color:#5A5E6B;font-family:'JetBrains Mono',monospace}
-.funil-bar-track{background:rgba(255,255,255,.05);border-radius:4px;height:32px;overflow:hidden}
+.funil-etapa .fpct{font-size:.67rem;color:#5A5E6B;font-family:'JetBrains Mono',monospace}
+.funil-bar-track{background:rgba(255,255,255,.05);border-radius:4px;height:30px;overflow:hidden}
 .funil-bar{height:100%;border-radius:4px;display:flex;align-items:center;padding:0 10px;transition:width .7s cubic-bezier(.4,0,.2,1)}
 .funil-bar .fn{font-size:.75rem;font-weight:700;color:#0D0E12;white-space:nowrap;font-family:'Space Grotesk',sans-serif}
-
-/* MEDIDAS IMEDIATAS */
-.medidas{background:#161920;border:1px solid rgba(201,162,74,.2);border-radius:10px;padding:1.25rem;margin-bottom:1.25rem}
-.medidas-title{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:#C9A24A;font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:8px}
-.medida-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05)}
-.medida-item:last-child{border-bottom:none}
-.medida-num{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:#C9A24A;font-weight:700;background:rgba(201,162,74,.12);border:1px solid rgba(201,162,74,.25);border-radius:4px;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
-.medida-body .titulo{font-size:.85rem;font-weight:600;font-family:'Space Grotesk',sans-serif;margin-bottom:3px;color:#F0EDE8}
-.medida-body .desc{font-size:.75rem;color:#5A5E6B;line-height:1.5}
-.medida-body .acao{font-size:.72rem;color:#C9A24A;margin-top:4px;font-weight:600}
-
-/* DIAGNÓSTICO */
-.diag{background:#161920;border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:1.25rem;margin-bottom:1.25rem}
-.diag-item{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05)}
-.diag-item:last-child{border-bottom:none}
-.diag-icon{font-size:1.1rem;flex-shrink:0;margin-top:1px}
-.diag-titulo{font-size:.82rem;font-weight:600;font-family:'Space Grotesk',sans-serif;margin-bottom:2px}
-.diag-desc{font-size:.74rem;color:#5A5E6B;line-height:1.5}
-
-/* LEADS TABLE */
-.leads-box{background:#161920;border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:1.25rem;margin-bottom:1.25rem}
-.leads-table{width:100%;border-collapse:collapse;margin-top:4px}
-.leads-table th{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:#5A5E6B;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.07);text-align:left}
-.leads-table td{padding:9px 10px;font-size:.8rem;border-bottom:1px solid rgba(255,255,255,.04)}
-.leads-table tr:last-child td{border-bottom:none}
-.leads-table tr:hover td{background:rgba(255,255,255,.02)}
-.badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:.62rem;font-weight:700;letter-spacing:.05em;font-family:'JetBrains Mono',monospace}
-.badge.conversa{background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.25)}
-.btn-wa{display:inline-flex;align-items:center;gap:4px;color:#44ff88;font-size:.75rem;text-decoration:none;font-weight:600;padding:3px 8px;border:1px solid rgba(68,255,136,.2);border-radius:4px;background:rgba(68,255,136,.06)}
-.btn-wa:hover{background:rgba(68,255,136,.12)}
-.empty{padding:1.5rem;text-align:center;color:#3A3E4A;font-size:.82rem}
 .chart-wrap{position:relative;height:210px}
 
-/* FOOTER */
-footer{text-align:center;color:#3A3E4A;font-size:.68rem;padding:1.5rem 0 0;border-top:1px solid rgba(255,255,255,.05);margin-top:.5rem;font-family:'JetBrains Mono',monospace;letter-spacing:.05em}
+/* FONTES */
+.fontes-box{background:#161920;border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:1.25rem;margin-top:1.25rem}
+.fontes-table{width:100%;border-collapse:collapse}
+.fontes-table th{font-family:'JetBrains Mono',monospace;font-size:.52rem;color:#5A5E6B;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.07);text-align:left}
+.fontes-table td{padding:9px 10px;font-size:.8rem;border-bottom:1px solid rgba(255,255,255,.04)}
+.fontes-table tr:last-child td{border-bottom:none}
+.fonte-bar-mini{display:inline-block;height:5px;border-radius:3px;background:#C9A24A;vertical-align:middle;margin-left:6px;transition:width .5s}
+.conv-badge{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;padding:2px 6px;border-radius:3px}
+
+/* MEDIDAS */
+.medidas{background:#161920;border:1px solid rgba(201,162,74,.2);border-radius:10px;padding:1.25rem;margin-top:1.25rem}
+.medida-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.medida-item:last-child{border-bottom:none}
+.medida-num{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:#C9A24A;font-weight:700;background:rgba(201,162,74,.12);border:1px solid rgba(201,162,74,.25);border-radius:4px;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.medida-titulo{font-size:.84rem;font-weight:600;font-family:'Space Grotesk',sans-serif;margin-bottom:2px}
+.medida-desc{font-size:.74rem;color:#5A5E6B;line-height:1.5}
+.medida-acao{font-size:.72rem;color:#C9A24A;margin-top:4px;font-weight:600}
+
+/* DIAG */
+.diag{background:#161920;border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:1.25rem;margin-top:1.25rem}
+.diag-item{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.diag-item:last-child{border-bottom:none}
+.diag-titulo{font-size:.82rem;font-weight:600;font-family:'Space Grotesk',sans-serif;margin-bottom:2px}
+.diag-desc{font-size:.73rem;color:#5A5E6B;line-height:1.5}
+
+/* LEADS */
+.leads-box{background:#161920;border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:1.25rem;margin-top:1.25rem}
+.leads-table{width:100%;border-collapse:collapse}
+.leads-table th{font-family:'JetBrains Mono',monospace;font-size:.52rem;color:#5A5E6B;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.07);text-align:left}
+.leads-table td{padding:8px 10px;font-size:.79rem;border-bottom:1px solid rgba(255,255,255,.04)}
+.leads-table tr:last-child td{border-bottom:none}
+.leads-table tr:hover td{background:rgba(255,255,255,.02)}
+.btn-wa{display:inline-flex;align-items:center;gap:4px;color:#44ff88;font-size:.72rem;text-decoration:none;font-weight:600;padding:2px 7px;border:1px solid rgba(68,255,136,.2);border-radius:4px;background:rgba(68,255,136,.06)}
+.empty{padding:1.5rem;text-align:center;color:#3A3E4A;font-size:.82rem}
+
+footer{text-align:center;color:#3A3E4A;font-size:.65rem;padding:2rem 0 0;border-top:1px solid rgba(255,255,255,.05);margin-top:1.5rem;font-family:'JetBrains Mono',monospace;letter-spacing:.05em}
 </style>
 </head>
 <body>
 
 <div id="loading">
-  <svg width="32" height="32" viewBox="0 0 100 100" fill="none"><polygon points="14,93 27,93 44,12 31,12" fill="#fff"/><polygon points="86,93 73,93 56,12 69,12" fill="#fff"/><rect x="46.5" y="6" width="7" height="88" fill="#C9A24A"/></svg>
+  <svg width="30" height="30" viewBox="0 0 100 100" fill="none"><polygon points="14,93 27,93 44,12 31,12" fill="#fff"/><polygon points="86,93 73,93 56,12 69,12" fill="#fff"/><rect x="46.5" y="6" width="7" height="88" fill="#C9A24A"/></svg>
   <div class="spinner"></div>
-  <p style="color:#5A5E6B;font-size:.82rem;font-family:'JetBrains Mono',monospace;letter-spacing:.1em">CARREGANDO PAINEL...</p>
+  <p style="color:#5A5E6B;font-size:.78rem;font-family:'JetBrains Mono',monospace;letter-spacing:.1em">CARREGANDO...</p>
 </div>
-
 <div id="error-wrap" style="display:none">
-  <div class="err-icon">⚠️</div>
+  <div style="font-size:2.5rem">⚠️</div>
   <h2 id="err-title" style="font-family:'Space Grotesk',sans-serif;font-weight:700"></h2>
-  <p id="err-msg"></p>
+  <p id="err-msg" style="color:#5A5E6B;max-width:400px;line-height:1.6;font-size:.88rem;margin-top:8px"></p>
 </div>
 
 <div id="app">
   <div class="header">
     <div class="header-left">
       <div class="logo-wrap">
-        <svg width="28" height="28" viewBox="0 0 100 100" fill="none"><polygon points="14,93 27,93 44,12 31,12" fill="#fff"/><polygon points="86,93 73,93 56,12 69,12" fill="#fff"/><rect x="46.5" y="6" width="7" height="88" fill="#C9A24A"/></svg>
+        <svg width="26" height="26" viewBox="0 0 100 100" fill="none"><polygon points="14,93 27,93 44,12 31,12" fill="#fff"/><polygon points="86,93 73,93 56,12 69,12" fill="#fff"/><rect x="46.5" y="6" width="7" height="88" fill="#C9A24A"/></svg>
         <span class="wordmark">HUVEN</span>
       </div>
-      <div class="divider"></div>
+      <div class="divider-v"></div>
       <div class="cliente-info">
         <div class="nome" id="cliente-nome"></div>
-        <div class="sub">FUNIL COMERCIAL · TEMPO REAL</div>
+        <div class="sub" id="cliente-sub">FUNIL COMERCIAL · TEMPO REAL</div>
       </div>
     </div>
-    <div class="mes-selector" id="mes-selector"></div>
+    <div class="header-right">
+      <div class="mes-selector" id="mes-selector"></div>
+      <button id="btn-export" onclick="window.print()">⬇ Exportar PDF</button>
+    </div>
   </div>
 
   <div id="alertas-wrap"></div>
-
-  <div class="section-label">Financeiro</div>
+  <div class="slabel">Financeiro</div>
   <div class="metrics-row" id="metrics-fin"></div>
-
-  <div class="section-label" style="margin-top:1rem">Comercial</div>
+  <div class="slabel">Comercial</div>
   <div class="metrics-row" id="metrics-com"></div>
-
-  <div class="medidas" id="medidas">
-    <div class="medidas-title">⚡ Medidas Imediatas</div>
-    <div id="medidas-content"></div>
-  </div>
-
+  <div id="projecao-wrap"></div>
   <div class="grid2">
     <div class="box">
       <div class="box-title">Funil de Vendas</div>
@@ -156,334 +206,386 @@ footer{text-align:center;color:#3A3E4A;font-size:.68rem;padding:1.5rem 0 0;borde
       <div class="chart-wrap"><canvas id="chart"></canvas></div>
     </div>
   </div>
-
-  <div class="diag" id="diag">
-    <div class="box-title" style="color:#C9A24A;font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin-bottom:1rem">Diagnóstico Detalhado</div>
+  <div class="fontes-box" id="fontes-box">
+    <div class="box-title">Análise por Fonte de Lead</div>
+    <div id="fontes-content"></div>
+  </div>
+  <div class="medidas" id="medidas">
+    <div class="box-title" style="color:#C9A24A;margin-bottom:.75rem">⚡ Medidas Imediatas</div>
+    <div id="medidas-content"></div>
+  </div>
+  <div class="diag">
+    <div class="box-title">Diagnóstico Detalhado</div>
     <div id="diag-content"></div>
   </div>
-
   <div class="leads-box">
-    <div class="box-title">Leads em Conversa <span id="conversa-count" style="color:#fbbf24;margin-left:6px;font-weight:400"></span></div>
+    <div class="box-title">Leads em Conversa <span id="conversa-count" style="color:#fbbf24;font-weight:400;margin-left:6px"></span></div>
     <div id="leads-conversa"></div>
   </div>
-
-  <footer>HUVEN · Funil Comercial · Dados em tempo real via Google Sheets</footer>
+  <footer>HUVEN · Funil Comercial · Atualizado em tempo real via Google Sheets</footer>
 </div>
 
 <script>
-const COL = { CHEGADA:0, NOME:1, TELEFONE:2, TRATATIVA:3, REDE:4, STATUS:5, FECHARAM:6, VALOR:7 }
-const CORES = ['#C9A24A','#D4B468','#A08238','#7A6230','#44ff88']
+const COL={CHEGADA:0,NOME:1,TELEFONE:2,TRATATIVA:3,REDE:4,STATUS:5,FECHARAM:6,VALOR:7}
+const CORES=['#C9A24A','#B8933E','#A08238','#7A6230','#44ff88']
+const MESES={janeiro:0,fevereiro:1,'março':2,marco:2,abril:3,maio:4,junho:5,julho:6,agosto:7,setembro:8,outubro:9,novembro:10,dezembro:11}
 
-function parseCSV(txt) {
-  const rows = []
-  const lines = txt.split('\n')
-  for (let i = 1; i < lines.length; i++) {
-    const line = lines[i].trim(); if (!line) continue
-    const cells = []; let cur='', inQ=false
-    for (const c of line) {
-      if (c==='"'){inQ=!inQ;continue}
-      if (c===','&&!inQ){cells.push(cur.trim());cur=''}
-      else cur+=c
-    }
-    cells.push(cur.trim())
-    if (cells.some(c=>c)) rows.push(cells)
+function parseCSV(txt){
+  const rows=[];const lines=txt.split('\n')
+  for(let i=1;i<lines.length;i++){
+    const line=lines[i].trim();if(!line)continue
+    const cells=[];let cur='',inQ=false
+    for(const c of line){if(c==='"'){inQ=!inQ;continue}if(c===','&&!inQ){cells.push(cur.trim());cur=''}else cur+=c}
+    cells.push(cur.trim());if(cells.some(c=>c))rows.push(cells)
   }
   return rows
 }
+function norm(s){return(s||'').toUpperCase().trim().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s+/g,' ')}
+function parseMoney(s){return parseFloat((s||'0').replace(/[^0-9,.]/g,'').replace(',','.'))||0}
+function fmtM(v){return v>0?'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0}):null}
+function pct(a,b){return b>0?Math.round(a/b*100):0}
+function ceil1(n){return Math.ceil(n*10)/10}
 
-function norm(s){ return (s||'').toUpperCase().trim().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s+/g,' ') }
-function parseMoney(s){ return parseFloat((s||'0').replace(/[^0-9,.]/g,'').replace(',','.'))||0 }
-function fmtMoney(v){ return v>0?'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0}):null }
-function fmtPct(a,b){ return b>0?Math.round(a/b*100):0 }
+const STATUS_ETAPA={'NAO RESPONDEU':1,'RESPONDEU E NAO AGENDOU':2,'EM CONVERSA':2,'AGENDOU E NAO COMPARECEU':3,'COMPARECEU E NAO FECHOU':4,'COMPARECEU E FECHOU':5}
 
-const STATUS_ETAPA = {
-  'NAO RESPONDEU':1,'RESPONDEU E NAO AGENDOU':2,'EM CONVERSA':2,
-  'AGENDOU E NAO COMPARECEU':3,'COMPARECEU E NAO FECHOU':4,'COMPARECEU E FECHOU':5
-}
-
-function calcular(rows) {
+function calcular(rows){
   let total=0,respondeu=0,agendou=0,compareceu=0,fechou=0,valorTotal=0
-  const emConversa=[], qualidade={semStatus:0,semTelefone:0,semNome:0,fechamentoSemValor:0}
-
-  for (const r of rows) {
-    const st = norm(r[COL.STATUS])
-    const etapa = STATUS_ETAPA[st]||0
-    if (!r[COL.NOME]&&!r[COL.STATUS]&&!r[COL.CHEGADA]) continue
+  const emConversa=[],fontes={},qualidade={semStatus:0,semTel:0,semNome:0,fechSemValor:0}
+  for(const r of rows){
+    const st=norm(r[COL.STATUS]),etapa=STATUS_ETAPA[st]||0
+    if(!r[COL.NOME]&&!r[COL.STATUS]&&!r[COL.CHEGADA])continue
     total++
-
-    // qualidade
-    if (!r[COL.STATUS]||!st) qualidade.semStatus++
-    if (!r[COL.TELEFONE]) qualidade.semTelefone++
-    if (!r[COL.NOME]) qualidade.semNome++
-
-    if (etapa>=2) respondeu++
-    if (etapa>=3) agendou++
-    if (etapa>=4) compareceu++
-
-    const fecharam = norm(r[COL.FECHARAM]||'')
-    const fechou_flag = etapa>=5 || fecharam==='SIM'
-    if (fechou_flag) {
+    if(!r[COL.STATUS]||!st)qualidade.semStatus++
+    if(!r[COL.TELEFONE])qualidade.semTel++
+    if(!r[COL.NOME])qualidade.semNome++
+    if(etapa>=2)respondeu++
+    if(etapa>=3)agendou++
+    if(etapa>=4)compareceu++
+    const fech=norm(r[COL.FECHARAM]||'')
+    const fechou_f=etapa>=5||fech==='SIM'
+    if(fechou_f){
       fechou++
-      const v = parseMoney(r[COL.VALOR])
-      valorTotal += v
-      if (v===0) qualidade.fechamentoSemValor++
+      const v=parseMoney(r[COL.VALOR])
+      valorTotal+=v
+      if(v===0)qualidade.fechSemValor++
     }
+    if(st.includes('EM CONVERSA'))emConversa.push({nome:r[COL.NOME]||'—',tel:r[COL.TELEFONE]||'—',chegada:r[COL.CHEGADA]||'—',tratativa:r[COL.TRATATIVA]||''})
+    const fonte=(r[COL.REDE]||'').trim()||'Não informado'
+    if(!fontes[fonte])fontes[fonte]={total:0,fechou:0,valor:0}
+    fontes[fonte].total++
+    if(fechou_f){fontes[fonte].fechou++;fontes[fonte].valor+=parseMoney(r[COL.VALOR])}
+  }
+  const tMedio=fechou>0?Math.round(valorTotal/fechou):0
+  return{total,respondeu,agendou,compareceu,fechou,valorTotal,tMedio,emConversa,fontes,qualidade,
+    respondRate:pct(respondeu,total),agendRate:pct(agendou,respondeu),
+    showUpRate:pct(compareceu,agendou),closeRate:pct(fechou,compareceu),convGeral:pct(fechou,total)}
+}
 
-    if (st.includes('EM CONVERSA')) {
-      emConversa.push({ nome:r[COL.NOME]||'—', tel:r[COL.TELEFONE]||'—', chegada:r[COL.CHEGADA]||'—', tratativa:r[COL.TRATATIVA]||'' })
-    }
+function getDiasRestantes(abaName){
+  const parts=(abaName||'').toLowerCase().split(' ')
+  const mesIdx=MESES[parts[0]],ano=parseInt(parts[1])
+  if(mesIdx===undefined||isNaN(ano))return null
+  const hoje=new Date(),mesAtual=hoje.getMonth(),anoAtual=hoje.getFullYear()
+  if(mesIdx===mesAtual&&ano===anoAtual){
+    const diasNoMes=new Date(ano,mesIdx+1,0).getDate()
+    return Math.max(1,diasNoMes-hoje.getDate()+1)
+  }
+  if(ano>anoAtual||(ano===anoAtual&&mesIdx>mesAtual)){
+    return new Date(ano,mesIdx+1,0).getDate()
+  }
+  return 0
+}
+
+function getDiaDecorridos(abaName){
+  const parts=(abaName||'').toLowerCase().split(' ')
+  const mesIdx=MESES[parts[0]],ano=parseInt(parts[1])
+  if(mesIdx===undefined||isNaN(ano))return 15
+  const hoje=new Date(),mesAtual=hoje.getMonth(),anoAtual=hoje.getFullYear()
+  if(mesIdx===mesAtual&&ano===anoAtual)return Math.max(1,hoje.getDate()-1)
+  const diasNoMes=new Date(ano,mesIdx+1,0).getDate()
+  return diasNoMes
+}
+
+function calcularProjecao(m,meta,metaReceita,custoLead,abaName){
+  const metaF=meta||0,metaR=metaReceita||0
+  const usarReceita=metaR>0&&!metaF
+  const metaValor=usarReceita?metaR:metaF
+  const atual=usarReceita?m.valorTotal:m.fechou
+  const pctMeta=metaValor>0?Math.min(100,Math.round(atual/metaValor*100)):0
+
+  if(pctMeta>=100)return{atingida:true,tipo:usarReceita?'receita':'fechamentos',meta:metaValor,atual,pctMeta}
+
+  const falta=metaValor-atual
+  const cr=Math.max(0.01,m.closeRate/100)
+  const sr=Math.max(0.01,m.showUpRate/100)
+  const ar=Math.max(0.01,m.agendRate/100)
+  const rr=Math.max(0.01,m.respondRate/100)
+
+  let fechFaltam,comparecerN,agendarN,responderN,leadsN
+  if(usarReceita){
+    fechFaltam=m.tMedio>0?Math.ceil(falta/m.tMedio):0
+  }else{
+    fechFaltam=falta
+  }
+  comparecerN=Math.ceil(fechFaltam/cr)
+  agendarN=Math.ceil(comparecerN/sr)
+  responderN=Math.ceil(agendarN/ar)
+  leadsN=Math.ceil(responderN/rr)
+
+  const invest=custoLead?Math.ceil(leadsN*custoLead):null
+  const receitaEsperada=fechFaltam*(m.tMedio||0)
+  const roi=invest&&invest>0?Math.round((receitaEsperada/invest-1)*100):null
+
+  const diasRestantes=getDiasRestantes(abaName)||30
+  const diasDecorridos=getDiaDecorridos(abaName)||15
+  const leadsPorDia=Math.ceil(leadsN/Math.max(1,diasRestantes))
+
+  const leadsPorDiaAtual=diasDecorridos>0?m.total/diasDecorridos:0
+  let projecaoAtingirDias=null
+  if(leadsPorDiaAtual>0){
+    const leadsTotaisNecessarios=m.total+leadsN
+    projecaoAtingirDias=Math.ceil(leadsN/leadsPorDiaAtual)
   }
 
-  const ticketMedio = fechou>0?Math.round(valorTotal/fechou):0
+  return{atingida:false,tipo:usarReceita?'receita':'fechamentos',meta:metaValor,atual,pctMeta,falta,
+    fechFaltam,comparecerN,agendarN,leadsN,invest,roi,receitaEsperada,
+    diasRestantes,leadsPorDia,projecaoAtingirDias,leadsPorDiaAtual:ceil1(leadsPorDiaAtual)}
+}
 
-  return {
-    total, respondeu, agendou, compareceu, fechou, valorTotal, ticketMedio, emConversa, qualidade,
-    respondRate: fmtPct(respondeu,total),
-    agendRate:   fmtPct(agendou,respondeu),
-    showUpRate:  fmtPct(compareceu,agendou),
-    closeRate:   fmtPct(fechou,compareceu),
-    convGeral:   fmtPct(fechou,total),
+function deltaHtml(atual,ant){
+  if(ant===undefined||ant===null)return''
+  const diff=atual-ant
+  if(Math.abs(diff)<0.5)return'<span class="delta flat">→ estável</span>'
+  const pcts=ant>0?Math.abs(Math.round(diff/ant*100)):'—'
+  const cls=diff>0?'up':'down',arrow=diff>0?'↑':'↓'
+  return`<span class="delta ${cls}">${arrow}${pcts}%</span>`
+}
+
+function renderAlertas(m){
+  const{qualidade:q}=m,itens=[]
+  if(q.semStatus>0)itens.push({cls:'vermelho',msg:`<strong>🚨 ${q.semStatus} lead${q.semStatus>1?'s':''} sem STATUS</strong> — o funil não consegue contabilizá-los. Preenche imediatamente.`})
+  if(q.fechSemValor>0)itens.push({cls:'amarelo',msg:`<strong>⚠️ ${q.fechSemValor} fechamento${q.fechSemValor>1?'s':''} sem VALOR</strong> — a receita total está incorreta.`})
+  if(q.semTel>0)itens.push({cls:'amarelo',msg:`<strong>⚠️ ${q.semTel} lead${q.semTel>1?'s':''} sem TELEFONE</strong> — impossível fazer follow-up.`})
+  document.getElementById('alertas-wrap').innerHTML=itens.length?`<div class="alertas">${itens.map(i=>`<div class="alerta ${i.cls}">${i.msg}</div>`).join('')}</div>`:''
+}
+
+function renderMetrics(m,ant){
+  const a=ant||{}
+  const fin=[
+    {lbl:'Receita Total',val:m.valorTotal>0?fmtM(m.valorTotal):'R$ —',hint:'do período',delta:deltaHtml(m.valorTotal,a.valorTotal),cls:m.valorTotal>0?'gold destaque':''},
+    {lbl:'Ticket Médio',val:m.tMedio>0?fmtM(m.tMedio):'R$ —',hint:'por fechamento',delta:deltaHtml(m.tMedio,a.tMedio),cls:''},
+    {lbl:'Fechamentos',val:m.fechou,hint:'vendas realizadas',delta:deltaHtml(m.fechou,a.fechou),cls:m.fechou>0?'verde':''},
+    {lbl:'Custo por Venda',val:m._custoVenda?fmtM(m._custoVenda):'—',hint:'investimento/fechamento',cls:''},
+  ]
+  const com=[
+    {lbl:'Total Leads',val:m.total,hint:'no período',delta:deltaHtml(m.total,a.total),cls:''},
+    {lbl:'Conversão Geral',val:m.convGeral+'%',hint:'leads → fechamento',delta:deltaHtml(m.convGeral,a.convGeral),cls:m.convGeral>=10?'verde':m.convGeral>=5?'amarelo':'vermelho'},
+    {lbl:'Show-up Rate',val:m.showUpRate+'%',hint:'agendou → compareceu',delta:deltaHtml(m.showUpRate,a.showUpRate),cls:m.showUpRate>=70?'verde':m.showUpRate>=50?'amarelo':'vermelho'},
+    {lbl:'Close Rate',val:m.closeRate+'%',hint:'compareceu → fechou',delta:deltaHtml(m.closeRate,a.closeRate),cls:m.closeRate>=50?'verde':m.closeRate>=30?'amarelo':'vermelho'},
+    {lbl:'Em Conversa',val:m.emConversa.length,hint:'atenção agora',delta:'',cls:m.emConversa.length>0?'amarelo':''},
+  ]
+  const mkCard=c=>`<div class="card ${c.cls}"><div class="lbl">${c.lbl}</div><div class="val">${c.val}</div><div class="hint">${c.hint} ${c.delta||''}</div></div>`
+  document.getElementById('metrics-fin').innerHTML=fin.map(mkCard).join('')
+  document.getElementById('metrics-com').innerHTML=com.map(mkCard).join('')
+}
+
+function renderProjecao(proj,meta,metaReceita){
+  const el=document.getElementById('projecao-wrap')
+  if(!meta&&!metaReceita){el.innerHTML='';return}
+  if(proj.atingida){
+    el.innerHTML=`<div class="projecao"><div class="proj-meta-atingida">
+      <div class="trophy">🏆</div>
+      <div class="msg">META ATINGIDA!</div>
+      <div class="sub">${proj.tipo==='receita'?fmtM(proj.atual)+' de '+fmtM(proj.meta):proj.atual+' de '+proj.meta+' fechamentos'} · ${proj.pctMeta}% da meta</div>
+    </div></div>`;return
   }
+  const tipoLabel=proj.tipo==='receita'?'receita':'fechamentos'
+  const atualLabel=proj.tipo==='receita'?fmtM(proj.atual)||'R$0':proj.atual
+  const metaLabel=proj.tipo==='receita'?fmtM(proj.meta):proj.meta
+  const faltaLabel=proj.tipo==='receita'?fmtM(proj.falta)||'—':proj.falta
+
+  el.innerHTML=`<div class="projecao">
+    <div class="proj-header">
+      <div>
+        <div class="proj-title">Projeção para <span>Meta ${proj.pctMeta}%</span></div>
+        <div class="proj-status">${atualLabel} de ${metaLabel} ${tipoLabel} · faltam ${faltaLabel}</div>
+      </div>
+    </div>
+    <div class="meta-progress">
+      <div class="meta-labels"><span>${atualLabel}</span><span>Meta: ${metaLabel}</span></div>
+      <div class="meta-bar-wrap"><div class="meta-bar" style="width:${proj.pctMeta}%"></div></div>
+      <div class="meta-labels"><span style="color:#C9A24A">${proj.pctMeta}% concluído</span><span style="color:#5A5E6B">${proj.diasRestantes} dias restantes</span></div>
+    </div>
+    <div class="proj-grid">
+      <div class="proj-card ouro"><div class="pc-lbl">Leads Necessários</div><div class="pc-val">${proj.leadsN}</div><div class="pc-hint">para atingir a meta</div></div>
+      <div class="proj-card"><div class="pc-lbl">Leads por Dia</div><div class="pc-val">${proj.leadsPorDia}</div><div class="pc-hint">nos ${proj.diasRestantes} dias restantes</div></div>
+      ${proj.invest?`<div class="proj-card azul"><div class="pc-lbl">Investimento</div><div class="pc-val">${fmtM(proj.invest)}</div><div class="pc-hint">estimado em tráfego</div></div>`:''}
+      ${proj.roi!==null?`<div class="proj-card verde"><div class="pc-lbl">ROI Esperado</div><div class="pc-val">${proj.roi}%</div><div class="pc-hint">retorno sobre invest.</div></div>`:''}
+    </div>
+    <div class="funil-reverso">
+      <div class="fr-title">Como chegar aos ${proj.fechFaltam} fechamento${proj.fechFaltam!==1?'s':''} que faltam</div>
+      <div class="fr-etapas">
+        <div class="fr-etapa"><div class="fr-num">${proj.leadsN}</div><div class="fr-lbl">leads totais</div></div>
+        <div class="fr-arrow">→</div>
+        <div class="fr-etapa"><div class="fr-num">${Math.ceil(proj.leadsN*(proj.projecaoAtingirDias!==null?1:1)*0.7)||'—'}</div><div class="fr-lbl">respondem</div></div>
+        <div class="fr-arrow">→</div>
+        <div class="fr-etapa"><div class="fr-num">${proj.agendarN}</div><div class="fr-lbl">agendam</div></div>
+        <div class="fr-arrow">→</div>
+        <div class="fr-etapa"><div class="fr-num">${proj.comparecerN}</div><div class="fr-lbl">comparecem</div></div>
+        <div class="fr-arrow">→</div>
+        <div class="fr-etapa final"><div class="fr-num">${proj.fechFaltam}</div><div class="fr-lbl">fechamentos</div></div>
+      </div>
+    </div>
+    <div class="ritmo-box">
+      <div class="ritmo-item"><div class="ritmo-val">${proj.leadsPorDiaAtual}/dia</div><div class="ritmo-lbl">ritmo atual</div></div>
+      <div class="ritmo-item"><div class="ritmo-val">${proj.leadsPorDia}/dia</div><div class="ritmo-lbl">ritmo necessário</div></div>
+      ${proj.projecaoAtingirDias!==null?`<div class="ritmo-item"><div class="ritmo-val" style="color:${proj.projecaoAtingirDias<=proj.diasRestantes?'#44ff88':'#ff6666'}">${proj.projecaoAtingirDias} dias</div><div class="ritmo-lbl">para atingir meta no ritmo atual</div></div>`:''}
+      ${proj.invest?`<div class="ritmo-item"><div class="ritmo-val">${fmtM(Math.round(proj.invest/Math.max(1,proj.diasRestantes))}/dia</div><div class="ritmo-lbl">orçamento diário</div></div>`:''}
+    </div>
+  </div>`
 }
 
-function renderAlertas(m) {
-  const {qualidade:q} = m
-  const itens = []
-  if (q.semStatus>0) itens.push({cls:'vermelho',icon:'🚨',msg:`<strong>${q.semStatus} lead${q.semStatus>1?'s':''} sem STATUS preenchido</strong> — o funil não consegue contar esses leads corretamente. Preenche imediatamente.`})
-  if (q.semTelefone>0) itens.push({cls:'amarelo',icon:'⚠️',msg:`<strong>${q.semTelefone} lead${q.semTelefone>1?'s':''} sem TELEFONE</strong> — impossível fazer follow-up. Solicita o contato.`})
-  if (q.fechamentoSemValor>0) itens.push({cls:'amarelo',icon:'⚠️',msg:`<strong>${q.fechamentoSemValor} fechamento${q.fechamentoSemValor>1?'s':''} sem VALOR registado</strong> — a receita total está incompleta. Preenche o valor de cada venda.`})
-  if (q.semNome>0) itens.push({cls:'amarelo',icon:'⚠️',msg:`<strong>${q.semNome} lead${q.semNome>1?'s':''} sem NOME</strong> — qualidade de registo baixa.`})
-  document.getElementById('alertas-wrap').innerHTML = itens.length
-    ? `<div class="alertas">${itens.map(it=>`<div class="alerta ${it.cls}"><span class="alerta-icon">${it.icon}</span><span>${it.msg}</span></div>`).join('')}</div>`
-    : ''
-}
-
-function renderMetrics(m) {
-  const fin = [
-    {lbl:'Receita Total', val: m.valorTotal>0 ? fmtMoney(m.valorTotal) : 'R$ —', hint:'do período', cls: m.valorTotal>0?'gold destaque':''},
-    {lbl:'Ticket Médio', val: m.ticketMedio>0 ? fmtMoney(m.ticketMedio) : 'R$ —', hint:'por fechamento', cls:''},
-    {lbl:'Fechamentos', val: m.fechou, hint:'vendas realizadas', cls: m.fechou>0?'verde':''},
-    {lbl:'Leads p/ Fechar', val: m.total>0&&m.fechou>0?Math.round(m.total/m.fechou)+'x':'—', hint:'leads necessários por venda', cls:''},
-  ]
-  const com = [
-    {lbl:'Total de Leads', val:m.total, hint:'no período', cls:''},
-    {lbl:'Conversão Geral', val:m.convGeral+'%', hint:'leads → fechamento', cls:m.convGeral>=10?'verde':m.convGeral>=5?'amarelo':'vermelho'},
-    {lbl:'Show-up Rate', val:m.showUpRate+'%', hint:'agendou → compareceu', cls:m.showUpRate>=70?'verde':m.showUpRate>=50?'amarelo':'vermelho'},
-    {lbl:'Close Rate', val:m.closeRate+'%', hint:'compareceu → fechou', cls:m.closeRate>=50?'verde':m.closeRate>=30?'amarelo':'vermelho'},
-    {lbl:'Em Conversa', val:m.emConversa.length, hint:'atenção agora', cls:m.emConversa.length>0?'amarelo':''},
-  ]
-  document.getElementById('metrics-fin').innerHTML = fin.map(c=>`<div class="card ${c.cls}"><div class="lbl">${c.lbl}</div><div class="val">${c.val}</div><div class="hint">${c.hint}</div></div>`).join('')
-  document.getElementById('metrics-com').innerHTML = com.map(c=>`<div class="card ${c.cls}"><div class="lbl">${c.lbl}</div><div class="val">${c.val}</div><div class="hint">${c.hint}</div></div>`).join('')
-}
-
-function renderFunil(m) {
-  const etapas = [
-    {nome:'Leads Totais', val:m.total},
-    {nome:'Responderam', val:m.respondeu},
-    {nome:'Agendaram', val:m.agendou},
-    {nome:'Compareceram', val:m.compareceu},
-    {nome:'Fecharam', val:m.fechou},
-  ]
-  const max = etapas[0].val||1
-  document.getElementById('funil').innerHTML = etapas.map((e,i)=>{
-    const w = Math.round(e.val/max*100)
-    const pctPrev = i>0&&etapas[i-1].val>0?Math.round(e.val/etapas[i-1].val*100):100
-    return `<div class="funil-etapa">
-      <div class="ftop"><span class="fname">${e.nome}</span><span class="fpct">${i>0?pctPrev+'%':''}</span></div>
-      <div class="funil-bar-track"><div class="funil-bar" style="width:${w}%;background:${CORES[i]}"><span class="fn">${e.val}</span></div></div>
-    </div>`
+function renderFunil(m){
+  const etapas=[{n:'Leads Totais',v:m.total},{n:'Responderam',v:m.respondeu},{n:'Agendaram',v:m.agendou},{n:'Compareceram',v:m.compareceu},{n:'Fecharam',v:m.fechou}]
+  const max=etapas[0].v||1
+  document.getElementById('funil').innerHTML=etapas.map((e,i)=>{
+    const w=Math.round(e.v/max*100)
+    const pp=i>0&&etapas[i-1].v>0?pct(e.v,etapas[i-1].v):100
+    return`<div class="funil-etapa"><div class="ftop"><span class="fname">${e.n}</span><span class="fpct">${i>0?pp+'%':''}</span></div><div class="funil-bar-track"><div class="funil-bar" style="width:${w}%;background:${CORES[i]}"><span class="fn">${e.v}</span></div></div></div>`
   }).join('')
 }
 
-let chartInst = null
-function renderChart(m) {
-  if (chartInst) chartInst.destroy()
-  const ctx = document.getElementById('chart').getContext('2d')
-  const naoResp = Math.max(0,m.total-m.respondeu)
-  const somenteConv = Math.max(0,m.respondeu-m.agendou)
-  const agNaoComp = Math.max(0,m.agendou-m.compareceu)
-  const compNaoF = Math.max(0,m.compareceu-m.fechou)
-  chartInst = new Chart(ctx,{
-    type:'doughnut',
-    data:{
-      labels:['Não respondeu','Respondeu/Conversa','Agendou não veio','Compareceu não fechou','Fechou'],
-      datasets:[{
-        data:[naoResp,somenteConv,agNaoComp,compNaoF,m.fechou],
-        backgroundColor:['#1C1F28','#4A3E22','#7A6230','#A08238','#44ff88'],
-        borderColor:['#2A2D38','#5A4E2E','#8A7240','#B09248','#44ff88'],
-        borderWidth:1,hoverOffset:4
-      }]
-    },
-    options:{responsive:true,maintainAspectRatio:false,plugins:{
-      legend:{position:'bottom',labels:{color:'#5A5E6B',font:{size:10,family:'Inter'},padding:8,boxWidth:10,boxHeight:10}}
-    }}
+let chartInst=null
+function renderChart(m){
+  if(chartInst)chartInst.destroy()
+  const ctx=document.getElementById('chart').getContext('2d')
+  chartInst=new Chart(ctx,{type:'doughnut',data:{
+    labels:['Não respondeu','Respondeu/Conversa','Agendou não veio','Compareceu não fechou','Fechou'],
+    datasets:[{data:[Math.max(0,m.total-m.respondeu),Math.max(0,m.respondeu-m.agendou),Math.max(0,m.agendou-m.compareceu),Math.max(0,m.compareceu-m.fechou),m.fechou],
+      backgroundColor:['#1C1F28','#3A3220','#6A5528','#9A7838','#44ff88'],
+      borderColor:['#2A2D38','#4A4230','#7A6538','#AA8848','#55ff99'],borderWidth:1,hoverOffset:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#5A5E6B',font:{size:10,family:'Inter'},padding:8,boxWidth:10,boxHeight:10}}}}
   })
 }
 
-function renderMedidas(m) {
-  const medidas = []
-  // Prioridade absoluta: em conversa
-  if (m.emConversa.length>0) {
-    medidas.push({
-      titulo:`Liga agora para os ${m.emConversa.length} lead${m.emConversa.length>1?'s':''} em conversa`,
-      desc:`São os leads mais quentes do momento. Cada dia sem ação é perda de receita potencial.`,
-      acao:`Ação: abre o WhatsApp, envia mensagem personalizada hoje — define próximo passo claro para cada um.`
-    })
+function renderFontes(m){
+  const fontes=m.fontes
+  const entries=Object.entries(fontes).sort((a,b)=>b[1].total-a[1].total)
+  const maxTotal=entries[0]?.[1].total||1
+  if(entries.length<=1&&entries[0]?.[0]==='Não informado'){
+    document.getElementById('fontes-content').innerHTML='<div class="empty">Coluna REDE SOCIAL não preenchida na planilha.</div>';return
   }
-  // Show-up baixo
-  if (m.showUpRate<60&&m.agendou>=2) {
-    const perdidos = m.agendou-m.compareceu
-    medidas.push({
-      titulo:`Recupera ${perdidos} agendamento${perdidos>1?'s':''} perdidos (show-up ${m.showUpRate}%)`,
-      desc:`Mais de ${100-m.showUpRate}% de quem agenda não aparece. Estás a perder oportunidades já quentes.`,
-      acao:`Ação: implementa confirmação 24h antes + reforço 1h antes via WhatsApp. Considera oferta de resgate para quem faltou.`
-    })
-  }
-  // Close rate baixo
-  if (m.closeRate<30&&m.compareceu>=2) {
-    const perdidos = m.compareceu-m.fechou
-    medidas.push({
-      titulo:`Retoma os ${perdidos} lead${perdidos>1?'s':''} que vieram mas não fecharam (close rate ${m.closeRate}%)`,
-      desc:`Estes leads já deram o maior passo — apareceram. Podem ainda converter com o follow-up certo.`,
-      acao:`Ação: envia proposta de follow-up nas próximas 48h com nova condição ou bónus de urgência.`
-    })
-  }
-  // Ticket médio oportunidade
-  if (m.fechou>0&&m.ticketMedio>0) {
-    const metaMais1 = m.fechou+1
-    const projecao = fmtMoney(metaMais1*m.ticketMedio)
-    medidas.push({
-      titulo:`Mais 1 fechamento = ${projecao} a mais na receita`,
-      desc:`Com ticket médio de ${fmtMoney(m.ticketMedio)}, cada venda extra tem impacto imediato. Foca no lead em conversa mais quente.`,
-      acao:`Ação: identifica o lead com maior probabilidade de fechar esta semana e prioriza o follow-up dele.`
-    })
-  }
-  // Volume baixo
-  if (m.total<10) {
-    medidas.push({
-      titulo:`Volume de leads baixo (${m.total}) — escala a entrada`,
-      desc:`Com poucos leads, qualquer variação distorce os números. Aumenta o volume para dados mais confiáveis e resultados melhores.`,
-      acao:`Ação: lança uma campanha de tráfego pago ou aumenta frequência de conteúdo esta semana.`
-    })
-  }
-  // Resposta baixa
-  if (m.respondRate<50&&m.total>=5) {
-    medidas.push({
-      titulo:`Melhora a abordagem inicial (taxa de resposta ${m.respondRate}%)`,
-      desc:`Metade dos leads não responde. O primeiro contato precisa de mais atenção — mensagem, timing ou canal errado.`,
-      acao:`Ação: testa nova abertura de conversa mais personalizada. Experimenta horário diferente (manhã vs tarde).`
-    })
-  }
-  // Qualidade de dados
-  const {qualidade:q} = m
-  if (q.semStatus>0||q.fechamentoSemValor>0) {
-    medidas.push({
-      titulo:`Corrige o preenchimento da planilha`,
-      desc:`${[q.semStatus>0?`${q.semStatus} leads sem status`:null,q.fechamentoSemValor>0?`${q.fechamentoSemValor} fechamentos sem valor`:null].filter(Boolean).join(' e ')}. Dados incompletos distorcem todas as métricas.`,
-      acao:`Ação: preenche estes campos hoje — leva menos de 5 minutos e impacta toda a análise.`
-    })
-  }
-  // Tudo bem
-  if (!medidas.length) {
-    medidas.push({
-      titulo:'Métricas saudáveis — foca em volume',
-      desc:'O funil está funcionando bem. O próximo passo é aumentar a entrada de leads mantendo a qualidade do processo.',
-      acao:'Ação: define meta de leads para o próximo período e ajusta o orçamento de aquisição.'
-    })
-  }
-
-  document.getElementById('medidas-content').innerHTML = medidas.slice(0,5).map((m,i)=>`
-    <div class="medida-item">
-      <div class="medida-num">${i+1}</div>
-      <div class="medida-body">
-        <div class="titulo">${m.titulo}</div>
-        <div class="desc">${m.desc}</div>
-        <div class="acao">${m.acao}</div>
-      </div>
-    </div>`).join('')
-}
-
-function renderDiag(m) {
-  const itens = []
-  if (m.respondRate>=80) itens.push({icon:'✅',t:'Abordagem inicial forte ('+m.respondRate+'%)',d:'A primeira mensagem está funcionando. Mantém o padrão.'})
-  else if (m.respondRate<50&&m.total>0) itens.push({icon:'🔴',t:'Taxa de resposta crítica ('+m.respondRate+'%)',d:'Revê o canal, mensagem e horário do primeiro contato.'})
-  if (m.showUpRate>=80&&m.agendou>0) itens.push({icon:'✅',t:'Show-up excelente ('+m.showUpRate+'%)',d:'O processo de confirmação está funcionando muito bem.'})
-  else if (m.showUpRate<60&&m.agendou>0) itens.push({icon:'⚠️',t:'Show-up baixo ('+m.showUpRate+'%)',d:'Implanta confirmação 24h+1h antes. Considera reunião online para reduzir fricção.'})
-  if (m.closeRate>=50&&m.compareceu>0) itens.push({icon:'✅',t:'Close rate sólido ('+m.closeRate+'%)',d:'A reunião converte bem. Foca em aumentar volume que chega à reunião.'})
-  else if (m.closeRate<30&&m.compareceu>0) itens.push({icon:'🔴',t:'Close rate fraco ('+m.closeRate+'%)',d:'Revê apresentação, diagnóstico de necessidades e tratamento de objeções.'})
-  if (m.convGeral>=10) itens.push({icon:'✅',t:'Conversão geral acima de 10%',d:'Resultado acima da média. Hora de escalar volume com o mesmo processo.'})
-  else if (m.convGeral<5&&m.total>=10) itens.push({icon:'⚠️',t:'Conversão geral abaixo de 5%',d:'Identifica o maior gargalo: resposta, show-up ou fechamento, e ataca um de cada vez.'})
-  if (m.valorTotal>0) itens.push({icon:'💰',t:`Receita de ${fmtMoney(m.valorTotal)} no período`,d:`Ticket médio de ${fmtMoney(m.ticketMedio)} por venda. Cada ponto percentual de close rate vale aprox. ${fmtMoney(m.ticketMedio*m.compareceu/100)}.`})
-  if (!itens.length) itens.push({icon:'ℹ️',t:'Dados insuficientes',d:'Adiciona leads na planilha para activar o diagnóstico.'})
-  document.getElementById('diag-content').innerHTML = itens.map(it=>`
-    <div class="diag-item">
-      <div class="diag-icon">${it.icon}</div>
-      <div><div class="diag-titulo">${it.t}</div><div class="diag-desc">${it.d}</div></div>
-    </div>`).join('')
-}
-
-function renderLeads(leads) {
-  const el = document.getElementById('leads-conversa')
-  document.getElementById('conversa-count').textContent = leads.length?`(${leads.length})`:''
-  if (!leads.length){el.innerHTML='<div class="empty">Nenhum lead em conversa ativa neste período.</div>';return}
-  el.innerHTML=`<table class="leads-table">
-    <tr><th>Nome</th><th>Telefone</th><th>Chegada</th><th>Tratativa</th></tr>
-    ${leads.map(l=>`<tr>
-      <td style="font-weight:600">${l.nome}</td>
-      <td><a class="btn-wa" href="https://wa.me/55${l.tel.replace(/\D/g,'')}" target="_blank">📱 ${l.tel}</a></td>
-      <td style="color:#5A5E6B;font-size:.75rem">${l.chegada}</td>
-      <td style="color:#5A5E6B;font-size:.75rem;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${l.tratativa||'—'}</td>
-    </tr>`).join('')}
+  document.getElementById('fontes-content').innerHTML=`<table class="fontes-table">
+    <tr><th>Canal</th><th>Leads</th><th>Fechamentos</th><th>Conversão</th><th>Receita</th></tr>
+    ${entries.map(([fonte,d])=>{
+      const conv=pct(d.fechou,d.total)
+      const cls=conv>=15?'style="color:#44ff88;font-weight:700"':conv>=8?'style="color:#fbbf24"':'style="color:#5A5E6B"'
+      const barW=Math.round(d.total/maxTotal*80)
+      return`<tr>
+        <td style="font-weight:600">${fonte}<span class="fonte-bar-mini" style="width:${barW}px"></span></td>
+        <td>${d.total}</td>
+        <td>${d.fechou}</td>
+        <td ${cls}>${conv}%</td>
+        <td style="color:${d.valor>0?'#C9A24A':'#5A5E6B'}">${d.valor>0?fmtM(d.valor):'—'}</td>
+      </tr>`
+    }).join('')}
   </table>`
 }
 
-async function fetchCSV(sid, aba) {
-  const url = `https://docs.google.com/spreadsheets/d/${sid}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(aba)}`
-  const r = await fetch(url); if (!r.ok) throw new Error('Erro ao buscar planilha: '+aba)
+function renderMedidas(m,proj){
+  const medidas=[]
+  if(m.emConversa.length>0)medidas.push({t:`Liga agora para os ${m.emConversa.length} lead${m.emConversa.length>1?'s':''} em conversa`,d:`São os leads mais quentes do momento — qualquer dia sem ação é receita perdida.`,a:`Ação: WhatsApp hoje com próximo passo claro para cada um.`})
+  if(proj&&!proj.atingida&&proj.leadsPorDia>proj.leadsPorDiaAtual)medidas.push({t:`Aumenta para ${proj.leadsPorDia} leads/dia (atual: ${proj.leadsPorDiaAtual})`,d:`No ritmo atual ${proj.projecaoAtingirDias!==null?`atingirás a meta em ${proj.projecaoAtingirDias} dias`:'não atingirás a meta no prazo'}. ${proj.diasRestantes} dias restantes.`,a:`Ação: ${proj.invest?`investe mais ${fmtM(Math.round(proj.invest/proj.diasRestantes))} por dia em tráfego pago ou aumenta frequência de conteúdo.`:'aumenta volume de conteúdo ou investimento em tráfego.'}`})
+  if(m.showUpRate<60&&m.agendou>=2){const p=m.agendou-m.compareceu;medidas.push({t:`Recupera ${p} agendamento${p>1?'s':''} perdidos (show-up ${m.showUpRate}%)`,d:`${100-m.showUpRate}% de quem agenda não aparece — oportunidades quentes a evaporar.`,a:`Ação: confirmação 24h + reforço 1h antes via WhatsApp. Oferece reagendamento para quem faltou.`})}
+  if(m.closeRate<30&&m.compareceu>=2){const p=m.compareceu-m.fechou;medidas.push({t:`Retoma ${p} lead${p>1?'s':''} que vieram mas não fecharam (close rate ${m.closeRate}%)`,d:`Estes leads já fizeram o maior esforço — aparecerem. Podem ainda converter.`,a:`Ação: follow-up em 48h com nova proposta ou bónus de urgência.`})}
+  if(m.qualidade.semStatus>0)medidas.push({t:`Preenche o STATUS de ${m.qualidade.semStatus} leads`,d:`Dados em branco tornam o funil invisível — métricas incorretas, projeções erradas.`,a:`Ação: 5 minutos na planilha corrige tudo.`})
+  if(!medidas.length)medidas.push({t:'Métricas saudáveis — escala o volume',d:'O funil funciona. O próximo passo é aumentar entrada de leads mantendo a qualidade.',a:'Ação: define orçamento de tráfego baseado no custo por lead atual.'})
+  document.getElementById('medidas-content').innerHTML=medidas.slice(0,5).map((x,i)=>`<div class="medida-item"><div class="medida-num">${i+1}</div><div><div class="medida-titulo">${x.t}</div><div class="medida-desc">${x.d}</div><div class="medida-acao">${x.a}</div></div></div>`).join('')
+}
+
+function renderDiag(m,ant){
+  const a=ant||{},itens=[]
+  if(m.respondRate>=80)itens.push({i:'✅',t:'Abordagem inicial forte ('+m.respondRate+'%)',d:'Mantém o padrão de primeiro contato.'+(a.respondRate?` Era ${a.respondRate}% no período anterior.`:'')})
+  else if(m.respondRate<50&&m.total>0)itens.push({i:'🔴',t:'Taxa de resposta crítica ('+m.respondRate+'%)',d:'Revê canal, mensagem e horário do primeiro contacto.'})
+  if(m.showUpRate>=80&&m.agendou>0)itens.push({i:'✅',t:'Show-up excelente ('+m.showUpRate+'%)',d:'Confirmação funcionando bem.'})
+  else if(m.showUpRate<60&&m.agendou>0)itens.push({i:'⚠️',t:'Show-up baixo ('+m.showUpRate+'%)',d:'Confirmação 24h+1h antes. Considera reunião online.'})
+  if(m.closeRate>=50&&m.compareceu>0)itens.push({i:'✅',t:'Close rate sólido ('+m.closeRate+'%)',d:'Reunião converte bem. Foca no volume que chega à reunião.'})
+  else if(m.closeRate<30&&m.compareceu>0)itens.push({i:'🔴',t:'Close rate fraco ('+m.closeRate+'%)',d:'Revê apresentação e tratamento de objeções.'})
+  if(m.valorTotal>0)itens.push({i:'💰',t:'Receita de '+(fmtM(m.valorTotal)||'—')+' no período',d:`Ticket médio ${fmtM(m.tMedio)||'—'}. ${a.valorTotal?'Período anterior: '+(fmtM(a.valorTotal)||'—')+'.':''}`})
+  if(!itens.length)itens.push({i:'ℹ️',t:'Dados insuficientes',d:'Adiciona leads na planilha.'})
+  document.getElementById('diag-content').innerHTML=itens.map(x=>`<div class="diag-item"><span style="font-size:1.1rem;flex-shrink:0;margin-top:1px">${x.i}</span><div><div class="diag-titulo">${x.t}</div><div class="diag-desc">${x.d}</div></div></div>`).join('')
+}
+
+function renderLeads(leads){
+  const el=document.getElementById('leads-conversa')
+  document.getElementById('conversa-count').textContent=leads.length?`(${leads.length})`:''
+  if(!leads.length){el.innerHTML='<div class="empty">Nenhum lead em conversa ativa.</div>';return}
+  el.innerHTML=`<table class="leads-table"><tr><th>Nome</th><th>Telefone</th><th>Chegada</th><th>Tratativa</th></tr>${leads.map(l=>`<tr><td style="font-weight:600">${l.nome}</td><td><a class="btn-wa" href="https://wa.me/55${l.tel.replace(/\D/g,'')}" target="_blank">📱 ${l.tel}</a></td><td style="color:#5A5E6B;font-size:.75rem">${l.chegada}</td><td style="color:#5A5E6B;font-size:.73rem;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${l.tratativa||'—'}</td></tr>`).join('')}</table>`
+}
+
+async function fetchCSV(sid,aba){
+  const url=`https://docs.google.com/spreadsheets/d/${sid}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(aba)}`
+  const r=await fetch(url);if(!r.ok)throw new Error('Erro ao buscar planilha: '+aba)
   return parseCSV(await r.text())
 }
 
-async function renderMes(cliente, aba) {
+async function renderMes(cliente,aba){
   document.querySelectorAll('.mes-btn').forEach(b=>b.classList.toggle('ativo',b.dataset.aba===aba))
-  const rows = await fetchCSV(cliente.sheets_id, aba)
-  const m = calcular(rows)
+  const idxAtual=cliente.abas.indexOf(aba)
+  const abaAnt=idxAtual>0?cliente.abas[idxAtual-1]:null
+
+  const [rowsAtual,rowsAnt]=await Promise.all([
+    fetchCSV(cliente.sheets_id,aba),
+    abaAnt?fetchCSV(cliente.sheets_id,abaAnt).catch(()=>null):Promise.resolve(null)
+  ])
+
+  const m=calcular(rowsAtual)
+  const ant=rowsAnt?calcular(rowsAnt):null
+
+  // Custo por venda
+  if(cliente.custo_por_lead&&m.fechou>0)m._custoVenda=Math.round(m.total*cliente.custo_por_lead/m.fechou)
+
+  const proj=calcularProjecao(m,cliente.meta_fechamentos||0,cliente.meta_receita||0,cliente.custo_por_lead||0,aba)
+
   renderAlertas(m)
-  renderMetrics(m)
+  renderMetrics(m,ant)
+  renderProjecao(proj,cliente.meta_fechamentos,cliente.meta_receita)
   renderFunil(m)
   renderChart(m)
-  renderMedidas(m)
-  renderDiag(m)
+  renderFontes(m)
+  renderMedidas(m,proj)
+  renderDiag(m,ant)
   renderLeads(m.emConversa)
 }
 
-async function init() {
-  const params = new URLSearchParams(window.location.search)
-  const cid = params.get('cliente')
-  if (!cid) {
+async function init(){
+  const params=new URLSearchParams(window.location.search)
+  const cid=params.get('cliente')
+  if(!cid){
     document.getElementById('loading').style.display='none'
     document.getElementById('error-wrap').style.display='flex'
     document.getElementById('err-title').textContent='Cliente não especificado'
     document.getElementById('err-msg').textContent='Adiciona ?cliente=ID na URL. Ex: ?cliente=arte-azulejo'
     return
   }
-  try {
-    const base = window.location.href.split('?')[0].replace(/\/[^\/]*$/,'')
-    const clientes = await fetch(base+'/clientes.json').then(r=>r.json())
-    const cliente = clientes.find(c=>c.id===cid)
-    if (!cliente) throw new Error(`Cliente "${cid}" não encontrado em clientes.json`)
-    document.title = cliente.nome+' · Funil HUVEN'
-    document.getElementById('cliente-nome').textContent = cliente.nome
-    const abaInicial = cliente.abas[cliente.abas.length-1]
-    document.getElementById('mes-selector').innerHTML = cliente.abas.map(a=>
-      `<button class="mes-btn${a===abaInicial?' ativo':''}" data-aba="${a}">${a}</button>`
-    ).join('')
-    document.getElementById('mes-selector').addEventListener('click',e=>{
-      if (e.target.classList.contains('mes-btn')) renderMes(cliente,e.target.dataset.aba)
-    })
+  try{
+    const base=window.location.href.split('?')[0].replace(/\/[^\/]*$/,'')
+    const clientes=await fetch(base+'/clientes.json').then(r=>r.json())
+    const cliente=clientes.find(c=>c.id===cid)
+    if(!cliente)throw new Error(`Cliente "${cid}" não encontrado em clientes.json`)
+    document.title=cliente.nome+' · Funil HUVEN'
+    document.getElementById('cliente-nome').textContent=cliente.nome
+    const metaInfo=[]
+    if(cliente.meta_fechamentos)metaInfo.push(`Meta: ${cliente.meta_fechamentos} fechamentos`)
+    if(cliente.meta_receita)metaInfo.push(`Meta: ${fmtM(cliente.meta_receita)}`)
+    if(metaInfo.length)document.getElementById('cliente-sub').textContent='FUNIL COMERCIAL · '+metaInfo.join(' · ')
+    const abaInicial=cliente.abas[cliente.abas.length-1]
+    document.getElementById('mes-selector').innerHTML=cliente.abas.map(a=>`<button class="mes-btn${a===abaInicial?' ativo':''}" data-aba="${a}">${a}</button>`).join('')
+    document.getElementById('mes-selector').addEventListener('click',e=>{if(e.target.classList.contains('mes-btn'))renderMes(cliente,e.target.dataset.aba)})
     document.getElementById('loading').style.display='none'
     document.getElementById('app').style.display='block'
-    await renderMes(cliente, abaInicial)
-  } catch(e) {
+    await renderMes(cliente,abaInicial)
+  }catch(e){
     document.getElementById('loading').style.display='none'
     document.getElementById('error-wrap').style.display='flex'
     document.getElementById('err-title').textContent='Erro ao carregar'
