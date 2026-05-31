@@ -3,6 +3,9 @@
     "id": "arte-azulejo",
     "nome": "Arte em Azulejo",
     "sheets_id": "12Z-FjbNLzTm0O45uRbv9_7GhkJ45pLQ-kq3AuvstNK8",
-    "abas": ["Maio 2026", "Junho 2026", "Julho 2026", "Agosto 2026", "Setembro 2026"]
+    "abas": ["Maio 2026", "Junho 2026", "Julho 2026", "Agosto 2026", "Setembro 2026"],
+    "meta_fechamentos": 15,
+    "meta_receita": 20000,
+    "custo_por_lead": 15
   }
 ]
