@@ -32,20 +32,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:#0D0E12;color:#F0EDE8;m
 .mes-btn{padding:5px 11px;border-radius:5px;font-size:.7rem;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,.08);background:transparent;color:#5A5E6B;font-family:'JetBrains Mono',monospace;letter-spacing:.05em}
 .mes-btn.ativo{background:rgba(201,162,74,.1);border-color:rgba(201,162,74,.4);color:#C9A24A}
 #btn-export{padding:6px 14px;background:rgba(201,162,74,.1);border:1px solid rgba(201,162,74,.3);color:#C9A24A;font-size:.75rem;font-weight:700;border-radius:5px;cursor:pointer;font-family:'JetBrains Mono',monospace;letter-spacing:.06em}
-/* META EDITOR */
-.meta-editor{background:#0f1119;border:1px solid rgba(201,162,74,.25);border-radius:10px;padding:1.25rem;margin-top:1.25rem}
-.meta-editor .me-title{font-family:'JetBrains Mono',monospace;font-size:.56rem;color:#C9A24A;font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center}
-.meta-editor .me-title button{font-size:.65rem;padding:3px 10px;background:none;border:1px solid rgba(255,255,255,.1);color:#5A5E6B;border-radius:4px;cursor:pointer;font-family:'JetBrains Mono',monospace}
-.me-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:1rem}
-.me-field label{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:#5A5E6B;font-weight:700;letter-spacing:.12em;text-transform:uppercase;display:block;margin-bottom:5px}
-.me-field input{width:100%;background:#161920;border:1px solid rgba(255,255,255,.08);color:#F0EDE8;font-family:'Space Grotesk',sans-serif;font-size:.9rem;font-weight:600;padding:.55rem .8rem;border-radius:6px;outline:none}
-.me-field input:focus{border-color:rgba(201,162,74,.4)}
-.me-field .me-hint{font-size:.65rem;color:#5A5E6B;margin-top:4px}
-.me-btns{display:flex;gap:8px}
-.me-save{padding:7px 18px;background:#C9A24A;border:none;color:#0D0E12;font-weight:700;font-size:.82rem;border-radius:6px;cursor:pointer;font-family:'Space Grotesk',sans-serif}
-.me-reset{padding:7px 14px;background:none;border:1px solid rgba(255,255,255,.1);color:#5A5E6B;font-size:.78rem;border-radius:6px;cursor:pointer;font-family:'Inter',sans-serif}
-.me-saved{font-size:.75rem;color:#44ff88;font-family:'JetBrains Mono',monospace;opacity:0;transition:opacity .3s}
-.me-saved.show{opacity:1}
 .alertas{display:flex;flex-direction:column;gap:8px;margin-bottom:1.25rem}
 .alerta{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-radius:8px;font-size:.8rem;line-height:1.5}
 .alerta.vermelho{background:rgba(255,68,68,.06);border:1px solid rgba(255,68,68,.2);color:#ff8888}
@@ -178,7 +164,6 @@ footer{text-align:center;color:#3A3E4A;font-size:.65rem;padding:2rem 0 0;border-
   <div class="slabel">Comercial</div>
   <div class="metrics-row" id="mcom"></div>
   <div id="proj-wrap"></div>
-  <div id="meta-editor-wrap"></div>
   <div class="grid2">
     <div class="box"><div class="box-title">Funil de Vendas</div><div class="funil-wrap" id="funil"></div></div>
     <div class="box"><div class="box-title">Por Etapa</div><div class="chart-wrap"><canvas id="chart"></canvas></div></div>
@@ -493,9 +478,8 @@ function fetchCSV(sid,aba){
     .catch(function(e){clearTimeout(timer);throw e;});
 }
 
-function renderMes(cliente,aba,metaOverride){
+function renderMes(cliente,aba){
   document.querySelectorAll('.mes-btn').forEach(function(b){b.classList.toggle('ativo',b.dataset.aba===aba);});
-  var meta=metaOverride||loadMeta(cliente);
   var idx=cliente.abas.indexOf(aba);
   var abaAnt=idx>0?cliente.abas[idx-1]:null;
   return Promise.all([
@@ -504,93 +488,11 @@ function renderMes(cliente,aba,metaOverride){
   ]).then(function(results){
     var m=calcular(results[0]);
     var ant=results[1].length?calcular(results[1]):null;
-    if(meta.custo_por_lead&&m.fechou>0)m._custoVenda=Math.round(m.total*meta.custo_por_lead/m.fechou);
-    var proj=calcProj(m,meta.meta_fechamentos||0,meta.meta_receita||0,meta.custo_por_lead||0,aba);
-    rAlertas(m);rMetrics(m,ant);rProj(proj,meta.meta_fechamentos,meta.meta_receita);
+    if(cliente.custo_por_lead&&m.fechou>0)m._custoVenda=Math.round(m.total*cliente.custo_por_lead/m.fechou);
+    var proj=calcProj(m,cliente.meta_fechamentos||0,cliente.meta_receita||0,cliente.custo_por_lead||0,aba);
+    rAlertas(m);rMetrics(m,ant);rProj(proj,cliente.meta_fechamentos,cliente.meta_receita);
     rFunil(m);rChart(m);rFontes(m);rMedidas(m,proj);rDiag(m,ant);rLeads(m.emConversa);
-    // Render meta editor (after data so onSave can re-render)
-    rMetaEditor(cliente,meta,function(newMeta){
-      renderMes(cliente,aba,newMeta);
-    });
   });
-}
-
-// META — load from: URL params > localStorage > clientes.json defaults
-function metaKey(cid){return'huven_meta_'+cid;}
-
-function loadMeta(cliente){
-  var params=new URLSearchParams(window.location.search);
-  // URL params override everything (allows sending pre-configured links)
-  var urlF=parseInt(params.get('meta_fechamentos'));
-  var urlR=parseInt(params.get('meta_receita'));
-  var urlC=parseInt(params.get('custo_lead'));
-  if(urlF||urlR||urlC){
-    return{meta_fechamentos:urlF||0,meta_receita:urlR||0,custo_por_lead:urlC||cliente.custo_por_lead||0,_source:'url'};
-  }
-  // localStorage override
-  try{
-    var stored=localStorage.getItem(metaKey(cliente.id));
-    if(stored){var d=JSON.parse(stored);d._source='local';return d;}
-  }catch(e){}
-  // Fall back to clientes.json
-  return{meta_fechamentos:cliente.meta_fechamentos||0,meta_receita:cliente.meta_receita||0,custo_por_lead:cliente.custo_por_lead||0,_source:'json'};
-}
-
-function saveMeta(cid,mF,mR,cL){
-  try{localStorage.setItem(metaKey(cid),JSON.stringify({meta_fechamentos:mF,meta_receita:mR,custo_por_lead:cL}));}
-  catch(e){}
-}
-
-function resetMeta(cid){
-  try{localStorage.removeItem(metaKey(cid));}catch(e){}
-}
-
-function rMetaEditor(cliente,meta,onSave){
-  var el=document.getElementById('meta-editor-wrap');
-  var srcLabel=meta._source==='url'?'via URL':meta._source==='local'?'personalizado':'padrao';
-  el.innerHTML='<div class="meta-editor">'
-    +'<div class="me-title"><span>&#x1F3AF; Definir Meta <span style="color:#5A5E6B;font-weight:400;margin-left:6px">('+srcLabel+')</span></span>'
-    +(meta._source==='local'?'<button id="btn-reset-meta">&#x21BA; Repor padrao</button>':'')
-    +'</div>'
-    +'<div class="me-grid">'
-    +'<div class="me-field"><label>Meta de Fechamentos</label><input id="inp-mf" type="number" min="0" value="'+(meta.meta_fechamentos||'')+'" placeholder="Ex: 15"><div class="me-hint">Numero de vendas a atingir no mes</div></div>'
-    +'<div class="me-field"><label>Meta de Receita (R$)</label><input id="inp-mr" type="number" min="0" value="'+(meta.meta_receita||'')+'" placeholder="Ex: 20000"><div class="me-hint">Deixa em 0 se usar meta de fechamentos</div></div>'
-    +'<div class="me-field"><label>Custo por Lead (R$)</label><input id="inp-cl" type="number" min="0" value="'+(meta.custo_por_lead||'')+'" placeholder="Ex: 15"><div class="me-hint">Custo medio de cada lead gerado</div></div>'
-    +'</div>'
-    +'<div class="me-btns"><button class="me-save" id="btn-save-meta">Salvar meta</button><button class="me-reset" id="btn-copy-meta">Copiar link</button><span class="me-saved" id="me-saved">&#x2713; Salvo</span></div>'
-    +'</div>';
-
-  document.getElementById('btn-save-meta').addEventListener('click',function(){
-    var mF=parseInt(document.getElementById('inp-mf').value)||0;
-    var mR=parseInt(document.getElementById('inp-mr').value)||0;
-    var cL=parseInt(document.getElementById('inp-cl').value)||0;
-    saveMeta(cliente.id,mF,mR,cL);
-    var saved=document.getElementById('me-saved');
-    saved.classList.add('show');
-    setTimeout(function(){saved.classList.remove('show');},2000);
-    onSave({meta_fechamentos:mF,meta_receita:mR,custo_por_lead:cL,_source:'local'});
-  });
-
-  document.getElementById('btn-copy-meta').addEventListener('click',function(){
-    var mF=parseInt(document.getElementById('inp-mf').value)||0;
-    var mR=parseInt(document.getElementById('inp-mr').value)||0;
-    var cL=parseInt(document.getElementById('inp-cl').value)||0;
-    var base=window.location.origin+window.location.pathname;
-    var url=base+'?cliente='+cliente.id+(mF?'&meta_fechamentos='+mF:'')+(mR?'&meta_receita='+mR:'')+(cL?'&custo_lead='+cL:'');
-    navigator.clipboard.writeText(url).then(function(){
-      var btn=document.getElementById('btn-copy-meta');
-      btn.textContent='&#x2713; Copiado!';
-      setTimeout(function(){btn.textContent='Copiar link';},2000);
-    }).catch(function(){prompt('Copia este link:',url);});
-  });
-
-  var btnReset=document.getElementById('btn-reset-meta');
-  if(btnReset){
-    btnReset.addEventListener('click',function(){
-      resetMeta(cliente.id);
-      onSave({meta_fechamentos:cliente.meta_fechamentos||0,meta_receita:cliente.meta_receita||0,custo_por_lead:cliente.custo_por_lead||0,_source:'json'});
-    });
-  }
 }
 
 function showError(title,msg){
