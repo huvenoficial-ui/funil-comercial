@@ -163,7 +163,6 @@ footer{text-align:center;color:#3A3E4A;font-size:.65rem;padding:2rem 0 0;border-
   <div class="metrics-row" id="mfin"></div>
   <div class="slabel">Comercial</div>
   <div class="metrics-row" id="mcom"></div>
-  <div id="proj-wrap"></div>
   <div class="grid2">
     <div class="box"><div class="box-title">Funil de Vendas</div><div class="funil-wrap" id="funil"></div></div>
     <div class="box"><div class="box-title">Por Etapa</div><div class="chart-wrap"><canvas id="chart"></canvas></div></div>
@@ -489,9 +488,8 @@ function renderMes(cliente,aba){
     var m=calcular(results[0]);
     var ant=results[1].length?calcular(results[1]):null;
     if(cliente.custo_por_lead&&m.fechou>0)m._custoVenda=Math.round(m.total*cliente.custo_por_lead/m.fechou);
-    var proj=calcProj(m,cliente.meta_fechamentos||0,cliente.meta_receita||0,cliente.custo_por_lead||0,aba);
-    rAlertas(m);rMetrics(m,ant);rProj(proj,cliente.meta_fechamentos,cliente.meta_receita);
-    rFunil(m);rChart(m);rFontes(m);rMedidas(m,proj);rDiag(m,ant);rLeads(m.emConversa);
+    rAlertas(m);rMetrics(m,ant);
+    rFunil(m);rChart(m);rFontes(m);rMedidas(m,null);rDiag(m,ant);rLeads(m.emConversa);
   });
 }
 
