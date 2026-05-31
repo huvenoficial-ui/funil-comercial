@@ -677,7 +677,9 @@ function rLeads(leads){
 }
 
 function fetchCSV(sid,aba){
-  var url='https://docs.google.com/spreadsheets/d/'+sid+'/gviz/tq?tqx=out:csv&sheet='+encodeURIComponent(aba);
+  // Use 'default' as special keyword to fetch the first sheet without specifying tab name
+  var sheetParam=aba&&aba!=='default'?'&sheet='+encodeURIComponent(aba):'';
+  var url='https://docs.google.com/spreadsheets/d/'+sid+'/gviz/tq?tqx=out:csv'+sheetParam;
   var controller=new AbortController();
   var timer=setTimeout(function(){controller.abort();},12000);
   return fetch(url,{signal:controller.signal})
