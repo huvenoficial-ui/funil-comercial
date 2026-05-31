@@ -280,14 +280,27 @@ function parseCSV(txt){
 }
 
 function norm(s){
-  // FIX: use ̀-ͯ unicode escape — avoids base64 corruption of literal combining chars
   return (s||'').toUpperCase().trim()
     .normalize('NFD')
     .replace(/[̀-ͯ]/g,'')
     .replace(/\s+/g,' ');
 }
 
-function parseMoney(s){return parseFloat((s||'0').replace(/[^0-9,.]/g,'').replace(',','.'))||0;}
+function parseMoney(s){
+  var str=(s||'').replace(/[^0-9,.]/g,'');
+  if(!str)return 0;
+  // Brazilian: 6.000 = 6000 (period=thousands), 1.500,00 = 1500 (comma=decimal)
+  if(/,\d{1,2}$/.test(str)){
+    // ends with comma+digits = decimal comma format: 1.500,00
+    str=str.replace(/\./g,'').replace(',','.');
+  } else if(/\.\d{3}/.test(str)){
+    // period followed by 3 digits = thousands separator: 6.000
+    str=str.replace(/\./g,'');
+  } else {
+    str=str.replace(/,/g,'');
+  }
+  return parseFloat(str)||0;
+}
 function fmtM(v){return v>0?'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0}):null;}
 function pct(a,b){return b>0?Math.round(a/b*100):0;}
 
@@ -345,9 +358,10 @@ function calcular(data){
     showUpRate:pct(compareceu,agendou),closeRate:pct(fechou,compareceu),convGeral:pct(fechou,total)};
 }
 
+function normMes(s){return norm(s).toLowerCase();}
+
 function getDiasRestantes(abaName,hoje){
-  var parts=(abaName||'').toLowerCase().replace(/[^̀-ͯ]/g,function(c){return c;})
-    .normalize?abaName.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').split(' '):abaName.toLowerCase().split(' ');
+  var parts=normMes(abaName||'').split(' ');
   var mesNome=parts[0],ano=parseInt(parts[1]);
   var mesIdx=MESES[mesNome];
   if(mesIdx===undefined||isNaN(ano))return 30;
@@ -363,7 +377,7 @@ function getDiasRestantes(abaName,hoje){
 }
 
 function getDiaDecorridos(abaName,hoje){
-  var parts=abaName.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').split(' ');
+  var parts=normMes(abaName||'').split(' ');
   var mesNome=parts[0],ano=parseInt(parts[1]);
   var mesIdx=MESES[mesNome];
   if(mesIdx===undefined||isNaN(ano))return 15;
@@ -676,12 +690,13 @@ function renderMes(cliente,aba){
   document.querySelectorAll('.mes-btn').forEach(function(b){b.classList.toggle('ativo',b.dataset.aba===aba);});
   var idx=cliente.abas.indexOf(aba);
   var abaAnt=idx>0?cliente.abas[idx-1]:null;
+  var empty={rows:[],cols:COL_DEFAULT};
   return Promise.all([
     fetchCSV(cliente.sheets_id,aba),
-    abaAnt?fetchCSV(cliente.sheets_id,abaAnt).catch(function(){return[];}).then(function(r){return r;}):Promise.resolve([])
+    abaAnt?fetchCSV(cliente.sheets_id,abaAnt).catch(function(){return empty;}):Promise.resolve(empty)
   ]).then(function(results){
     var m=calcular(results[0]);
-    var ant=results[1].length?calcular(results[1]):null;
+    var ant=(results[1]&&results[1].rows&&results[1].rows.length)?calcular(results[1]):null;
     if(cliente.custo_por_lead&&m.fechou>0)m._custoVenda=Math.round(m.total*cliente.custo_por_lead/m.fechou);
     rAlertas(m);rMetrics(m,ant);
     rFunil(m);rChart(m);rFontes(m);rMedidas(m,null);rDiag(m,ant);rLeads(m.emConversa);
