@@ -431,15 +431,94 @@ function rFontes(m){
   document.getElementById('fontes').innerHTML=html;
 }
 
-function rMedidas(m,proj){
+function rMedidas(m){
   var itens=[];
-  if(m.emConversa.length>0)itens.push({t:'Liga agora para os '+m.emConversa.length+' lead'+(m.emConversa.length>1?'s':'')+' em conversa',d:'Sao os leads mais quentes. Cada dia sem acao e receita perdida.',a:'Acao: WhatsApp hoje com proximo passo claro para cada um.'});
-  if(proj&&!proj.atingida&&proj.leadsDia>proj.ritmAtual)itens.push({t:'Aumenta para '+proj.leadsDia+' leads/dia (atual: '+proj.ritmAtual+')',d:'No ritmo atual '+(proj.diasParaMeta?'a meta leva '+proj.diasParaMeta+' dias'+(proj.diasParaMeta>proj.diasR?' — fora do prazo':' — dentro do prazo'):'nao atinges a meta no prazo')+'.',a:'Acao: '+(proj.invest?'investe mais '+(fmtM(Math.round(proj.invest/Math.max(1,proj.diasR)))||'-')+'/dia em trafego pago.':'aumenta volume de conteudo ou investimento.')});
-  if(m.showUpRate<60&&m.agendou>=2){var p=m.agendou-m.compareceu;itens.push({t:'Recupera '+p+' agendamento'+(p>1?'s':'')+' perdidos (show-up '+m.showUpRate+'%)',d:''+(100-m.showUpRate)+'% de quem agenda nao aparece.',a:'Acao: confirmacao 24h + reforco 1h antes via WhatsApp.'});}
-  if(m.closeRate<30&&m.compareceu>=2){var c=m.compareceu-m.fechou;itens.push({t:'Retoma '+c+' lead'+(c>1?'s':'')+' que vieram mas nao fecharam',d:'Estes leads fizeram o maior esforco — aparecerem. Podem ainda converter.',a:'Acao: follow-up em 48h com nova proposta ou bonus de urgencia.'});}
-  if(m.qualidade.semStatus>0)itens.push({t:'Preenche o STATUS de '+m.qualidade.semStatus+' leads',d:'Dados em branco tornam o funil invisivel.',a:'Acao: 5 minutos na planilha corrige tudo.'});
-  if(!itens.length)itens.push({t:'Metricas saudaveis — escala o volume',d:'O funil funciona. Proxima acao e aumentar entrada de leads.',a:'Acao: define meta de trafego para o proximo periodo.'});
-  document.getElementById('medidas').innerHTML=itens.slice(0,5).map(function(x,i){return'<div class="mi"><div class="mn">'+(i+1)+'</div><div><div class="mt">'+x.t+'</div><div class="md">'+x.d+'</div><div class="ma">'+x.a+'</div></div></div>';}).join('');
+
+  // LEADS EM CONVERSA — prioridade maxima
+  if(m.emConversa.length>0){
+    var nomes=m.emConversa.slice(0,3).map(function(l){return l.nome.split(' ')[0];}).join(', ');
+    itens.push({
+      t:'Para tudo. Abre o WhatsApp AGORA para os '+m.emConversa.length+' leads em conversa',
+      d:'Estes sao os leads mais proximos do dinheiro. '+nomes+(m.emConversa.length>3?' e mais '+(m.emConversa.length-3):'')+(m.emConversa.length>1?' estao':' esta')+' esperando uma resposta. Cada hora que passa esfria o interesse.',
+      a:'Manda AGORA: "Oi [nome], lembrei de voce. Temos uma abertura essa semana. Quando voce tem 15 minutos para a gente conversar?"'
+    });
+  }
+
+  // SHOW-UP BAIXO — problema de processo
+  if(m.showUpRate<60&&m.agendou>=2){
+    var perdidos=m.agendou-m.compareceu;
+    itens.push({
+      t:perdidos+' pessoas agendaram e simplesmente sumiu — isso e dinheiro indo embora (show-up '+m.showUpRate+'%)',
+      d:'Agendamento sem confirmacao nao e agendamento — e esperanca. O problema nao e o lead, e o processo. Sem protocolo de confirmacao, '+Math.round((100-m.showUpRate)/100*m.agendou)+' em cada '+m.agendou+' vaga marcada vira no-show.',
+      a:'Implementa hoje: confirmacao manual 24h antes com nome ("Oi [nome], confirmo nossa conversa amanha as [hora]. Voce confirma?") + reforco 1h antes. Sem confirmacao = cancela e reagenda. Sem excecao.'
+    });
+  }
+
+  // CLOSE RATE BAIXO — problema de reuniao ou oferta
+  if(m.closeRate<30&&m.compareceu>=2){
+    var naoFecharam=m.compareceu-m.fechou;
+    itens.push({
+      t:naoFecharam+' pessoas foram a reuniao e nao compraram — a conta nao fecha assim (close rate '+m.closeRate+'%)',
+      d:'Quem aparece na reuniao ja passou pelo maior filtro. O problema esta dentro da reuniao: diagnostico fraco, proposta generica ou falta de urgencia real na oferta.',
+      a:'Hoje mesmo: liga para cada um que compareceu e nao fechou no ultimo mes. Script: "Oi [nome], fiquei pensando na sua situacao. Tenho uma condicao especial disponivel ate sexta. Posso te explicar em 10 minutos?" Fecha ou descarta — sem lead fantasma no funil.'
+    });
+  }
+
+  // RESPOSTA BAIXA — problema de abordagem
+  if(m.respondRate<50&&m.total>=5){
+    var fantasmas=m.total-m.respondeu;
+    itens.push({
+      t:fantasmas+' leads entraram e nao responderam — a primeira mensagem esta errada (resposta '+m.respondRate+'%)',
+      d:'Taxa de resposta abaixo de 50% nao e problema de lead ruim — e problema de abordagem. A primeira mensagem esta genérica, tardia ou no canal errado.',
+      a:'Muda a primeira mensagem AGORA. Teste: "Oi [nome]! Vi que voce se interessou por [produto]. Me conta rapidinho: qual e o seu maior desafio com [problema que resolve]?" Personalizado, curto, abre dialogo. Testa por 1 semana e compara.'
+    });
+  }
+
+  // VOLUME BAIXO — problema de escala
+  if(m.total<10&&m.total>0){
+    itens.push({
+      t:'Volume critico: '+m.total+' leads no periodo nao sao suficientes para sustentar o comercial',
+      d:'Com menos de 10 leads, uma semana ruim derruba todo o mes. O funil precisa de volume para ter previsibilidade. Conversao de 10% em 10 leads = 1 venda. Em 100 leads = 10 vendas.',
+      a:'Define hoje: qual canal vai dobrar o volume essa semana? Conteudo organico no Instagram, trafego pago ou indicacoes ativas? Escolhe um, executa, mede.'
+    });
+  }
+
+  // SEM NENHUM AGENDAMENTO — funil travado
+  if(m.respondeu>0&&m.agendou===0){
+    itens.push({
+      t:'Pessoas respondendo mas NINGUEM agendando — o funil esta travado no meio',
+      d:'O lead entra, responde, e some. Isso e o sinal mais claro de que a transicao de conversa para reuniao esta quebrada. Falta urgencia, clareza ou uma proposta de valor para a reuniao em si.',
+      d2:'A reuniao precisa ter valor proprio: nao "vamos conversar", mas "vou te mostrar exatamente onde voce esta perdendo dinheiro em 20 minutos".',
+      a:'Reescreve o convite para reuniao: adiciona o que o lead VAI GANHAR ao aparecer. Testa hoje com os leads em conversa.'
+    });
+  }
+
+  // QUALIDADE DE DADOS
+  if(m.qualidade.semStatus>0){
+    itens.push({
+      t:'Planilha com '+m.qualidade.semStatus+' leads sem status: voce esta gerenciando no escuro',
+      d:'Sem status preenchido o funil nao conta, nao projeta, nao diagnostica. E impossivel saber onde o processo esta quebrando. Dado ruim = decisao ruim.',
+      a:'Para o comercial AGORA e preenche. Nao e burocracia — e visibilidade. 5 minutos na planilha pode mudar a leitura de todo o mes.'
+    });
+  }
+
+  // TUDO BEM — escala
+  if(!itens.length){
+    itens.push({
+      t:'Funil saudavel — o proximo nivel e escala com controle',
+      d:'As taxas estao dentro do esperado. Agora o risco e escalar sem manter a qualidade. Volume sem processo vira caos.',
+      a:'Define a meta do proximo mes com 20% a mais de leads na entrada. Documenta o processo atual antes de contratar ou delegar qualquer etapa.'
+    });
+  }
+
+  document.getElementById('medidas').innerHTML=itens.slice(0,5).map(function(x,i){
+    return'<div class="mi"><div class="mn">'+(i+1)+'</div><div>'
+      +'<div class="mt">'+x.t+'</div>'
+      +'<div class="md">'+x.d+'</div>'
+      +(x.d2?'<div class="md" style="margin-top:5px">'+x.d2+'</div>':'')
+      +'<div class="ma">'+x.a+'</div>'
+      +'</div></div>';
+  }).join('');
 }
 
 function rDiag(m,ant){
