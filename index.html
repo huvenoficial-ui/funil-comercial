@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Funil Comercial</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#0f1117;color:#e8eaf0;min-height:100vh}
+#loading,#error{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:16px;text-align:center;padding:2rem}
+#loading .spinner{width:40px;height:40px;border:3px solid rgba(99,102,241,.2);border-top-color:#6366f1;border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#error .icon{font-size:3rem}
+#error p{color:#9ca3af;max-width:400px;line-height:1.6}
+#app{display:none;max-width:1100px;margin:0 auto;padding:1.5rem}
+header{margin-bottom:1.5rem}
+header .top{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:1rem}
+.brand{font-size:1.4rem;font-weight:800;letter-spacing:-.03em}
+.brand span{color:#6366f1}
+.cliente-nome{font-size:1rem;color:#9ca3af;margin-top:2px}
+.mes-selector{display:flex;flex-wrap:wrap;gap:6px}
+.mes-btn{padding:5px 12px;border-radius:6px;font-size:.78rem;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,.1);background:transparent;color:#9ca3af;transition:all .15s}
+.mes-btn.ativo{background:rgba(99,102,241,.2);border-color:#6366f1;color:#a5b4fc}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:1.5rem}
+.card{background:#1a1d27;border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:1rem 1.2rem}
+.card .label{font-size:.65rem;color:#6b7280;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.card .value{font-size:1.7rem;font-weight:800;letter-spacing:-.03em}
+.card .sub{font-size:.72rem;color:#6b7280;margin-top:4px}
+.card.destaque{border-color:rgba(99,102,241,.3)}
+.card.destaque .value{color:#a5b4fc}
+.card.verde .value{color:#34d399}
+.card.amarelo .value{color:#fbbf24}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:1.5rem}
+@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+.box{background:#1a1d27;border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:1.2rem}
+.box-title{font-size:.65rem;color:#6366f1;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:1rem}
+.funil-wrap{display:flex;flex-direction:column;gap:8px}
+.funil-etapa{position:relative}
+.funil-label{font-size:.72rem;color:#9ca3af;margin-bottom:4px;display:flex;justify-content:space-between}
+.funil-bar-wrap{background:rgba(255,255,255,.05);border-radius:4px;height:36px;position:relative;overflow:hidden}
+.funil-bar{height:100%;border-radius:4px;display:flex;align-items:center;padding:0 12px;transition:width .8s ease;position:relative}
+.funil-bar .bar-text{font-size:.78rem;font-weight:700;color:#fff;white-space:nowrap;z-index:1}
+.funil-bar .bar-pct{position:absolute;right:10px;font-size:.68rem;color:rgba(255,255,255,.6)}
+.leads-table{width:100%;border-collapse:collapse}
+.leads-table th{font-size:.6rem;color:#6b7280;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left}
+.leads-table td{padding:9px 10px;font-size:.82rem;border-bottom:1px solid rgba(255,255,255,.04)}
+.leads-table tr:last-child td{border-bottom:none}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.65rem;font-weight:700;letter-spacing:.05em}
+.badge.conversa{background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.3)}
+.badge.fechou{background:rgba(52,211,153,.15);color:#34d399;border:1px solid rgba(52,211,153,.3)}
+.diag{background:#1a1d27;border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:1.4rem;margin-bottom:1.5rem}
+.diag .diag-title{font-size:.65rem;color:#6366f1;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:1rem}
+.diag-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.diag-item:last-child{border-bottom:none}
+.diag-icon{font-size:1.2rem;flex-shrink:0;margin-top:2px}
+.diag-content .titulo{font-size:.85rem;font-weight:700;margin-bottom:3px}
+.diag-content .desc{font-size:.78rem;color:#9ca3af;line-height:1.55}
+.diag-loading{display:flex;align-items:center;gap:10px;color:#6b7280;font-size:.85rem;padding:1rem 0}
+.diag-loading .mini-spin{width:18px;height:18px;border:2px solid rgba(99,102,241,.2);border-top-color:#6366f1;border-radius:50%;animation:spin 1s linear infinite;flex-shrink:0}
+.empty{padding:2rem;text-align:center;color:#4b5563;font-size:.85rem}
+footer{text-align:center;color:#374151;font-size:.72rem;padding:2rem 0 1rem;border-top:1px solid rgba(255,255,255,.05);margin-top:1rem}
+.valor-total{font-size:.75rem;color:#34d399;margin-top:2px}
+.chart-wrap{position:relative;height:220px}
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <div class="spinner"></div>
+  <p style="color:#6b7280;font-size:.9rem">A carregar painel...</p>
+</div>
+
+<div id="error" style="display:none">
+  <div class="icon">⚠️</div>
+  <h2 id="error-title">Erro ao carregar</h2>
+  <p id="error-msg"></p>
+</div>
+
+<div id="app">
+  <header>
+    <div class="top">
+      <div>
+        <div class="brand">Funil <span>Comercial</span></div>
+        <div class="cliente-nome" id="cliente-nome"></div>
+      </div>
+      <div class="mes-selector" id="mes-selector"></div>
+    </div>
+  </header>
+
+  <div class="metrics" id="metrics"></div>
+
+  <div class="grid2">
+    <div class="box">
+      <div class="box-title">Funil de Vendas</div>
+      <div class="funil-wrap" id="funil"></div>
+    </div>
+    <div class="box">
+      <div class="box-title">Distribuição por Etapa</div>
+      <div class="chart-wrap"><canvas id="chart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="diag" id="diag">
+    <div class="diag-title">Diagnóstico Automático</div>
+    <div class="diag-loading" id="diag-loading"><div class="mini-spin"></div>Analisando dados...</div>
+    <div id="diag-content" style="display:none"></div>
+  </div>
+
+  <div class="box" style="margin-bottom:1.5rem">
+    <div class="box-title">Leads em Conversa <span id="conversa-count" style="color:#fbbf24;margin-left:6px"></span></div>
+    <div id="leads-conversa"></div>
+  </div>
+
+  <footer>Funil Comercial · Atualizado em tempo real via Google Sheets</footer>
+</div>
+
+<script>
+const COLUNAS = {
+  CHEGADA: 0, NOME: 1, TELEFONE: 2, TRATATIVA: 3, REDE_SOCIAL: 4,
+  STATUS: 5, FECHARAM: 6, VALOR: 7
+}
+
+const CORES_FUNIL = ['#6366f1','#818cf8','#a78bfa','#c084fc','#34d399']
+
+const STATUS_ETAPA = {
+  'NÃO RESPONDEU': 1,
+  'RESPONDEU E NÃO AGENDOU': 2,
+  'EM CONVERSA': 2,
+  'AGENDOU E NÃO COMPARECEU': 3,
+  'COMPARECEU E NÃO FECHOU': 4,
+  'COMPARECEU E FECHOU': 5
+}
+
+function parseCSV(text) {
+  const rows = []
+  const lines = text.split('\n')
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim()
+    if (!line) continue
+    const cells = []
+    let cur = '', inQ = false
+    for (let c of line) {
+      if (c === '"') { inQ = !inQ; continue }
+      if (c === ',' && !inQ) { cells.push(cur.trim()); cur = '' }
+      else cur += c
+    }
+    cells.push(cur.trim())
+    if (cells.some(c => c)) rows.push(cells)
+  }
+  return rows
+}
+
+function normalizeStatus(s) {
+  return (s || '').toUpperCase().trim()
+    .replace(/\s+/g, ' ')
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .normalize()
+}
+
+function calcularMetricas(rows) {
+  let total = 0, respondeu = 0, agendou = 0, compareceu = 0, fechou = 0
+  let valorTotal = 0, emConversa = []
+
+  for (const row of rows) {
+    const st = normalizeStatus(row[COLUNAS.STATUS])
+    const etapa = STATUS_ETAPA[st] || 0
+    if (!st) continue
+    total++
+
+    if (etapa >= 2) respondeu++
+    if (etapa >= 3) agendou++
+    if (etapa >= 4) compareceu++
+    if (etapa >= 5) fechou++
+
+    const fecharam = (row[COLUNAS.FECHARAM] || '').toUpperCase().trim()
+    if (fecharam === 'SIM' && etapa < 5) fechou++
+
+    const valor = parseFloat((row[COLUNAS.VALOR] || '0').replace(/[^0-9,.]/g,'').replace(',','.')) || 0
+    if (etapa >= 5 || fecharam === 'SIM') valorTotal += valor
+
+    if (st.includes('EM CONVERSA')) {
+      emConversa.push({
+        nome: row[COLUNAS.NOME] || '—',
+        telefone: row[COLUNAS.TELEFONE] || '—',
+        tratativa: row[COLUNAS.TRATATIVA] || '',
+        chegada: row[COLUNAS.CHEGADA] || ''
+      })
+    }
+  }
+
+  const pct = (a, b) => b > 0 ? Math.round(a / b * 100) : 0
+
+  return {
+    total, respondeu, agendou, compareceu, fechou, emConversa, valorTotal,
+    respondRate: pct(respondeu, total),
+    agendRate: pct(agendou, respondeu),
+    showUpRate: pct(compareceu, agendou),
+    closeRate: pct(fechou, compareceu),
+    convGeral: pct(fechou, total),
+  }
+}
+
+function renderMetrics(m) {
+  const fmt = n => n.toLocaleString('pt-BR')
+  const fmtMoney = v => v > 0 ? 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits:0,maximumFractionDigits:0}) : null
+
+  document.getElementById('metrics').innerHTML = [
+    { label: 'Total de Leads', value: m.total, sub: 'no período', cls: '' },
+    { label: 'Fechamentos', value: m.fechou, sub: fmtMoney(m.valorTotal) || 'vendas realizadas', cls: 'verde' },
+    { label: 'Conversão Geral', value: m.convGeral + '%', sub: 'leads → fechamento', cls: 'destaque' },
+    { label: 'Show-up Rate', value: m.showUpRate + '%', sub: 'agendou → compareceu', cls: m.showUpRate >= 70 ? 'verde' : 'amarelo' },
+    { label: 'Close Rate', value: m.closeRate + '%', sub: 'compareceu → fechou', cls: m.closeRate >= 50 ? 'verde' : 'amarelo' },
+  ].map(c => `
+    <div class="card ${c.cls}">
+      <div class="label">${c.label}</div>
+      <div class="value">${c.value}</div>
+      <div class="sub">${c.sub}</div>
+    </div>`).join('')
+}
+
+function renderFunil(m) {
+  const etapas = [
+    { nome: 'Leads Totais', val: m.total },
+    { nome: 'Responderam', val: m.respondeu },
+    { nome: 'Agendaram', val: m.agendou },
+    { nome: 'Compareceram', val: m.compareceu },
+    { nome: 'Fecharam', val: m.fechou },
+  ]
+  const max = etapas[0].val || 1
+  document.getElementById('funil').innerHTML = etapas.map((e, i) => {
+    const pct = Math.round(e.val / max * 100)
+    const pctPrev = i > 0 && etapas[i-1].val > 0 ? Math.round(e.val / etapas[i-1].val * 100) : 100
+    return `
+      <div class="funil-etapa">
+        <div class="funil-label">
+          <span>${e.nome}</span>
+          <span style="color:#6b7280">${i > 0 ? pctPrev + '% da etapa anterior' : ''}</span>
+        </div>
+        <div class="funil-bar-wrap">
+          <div class="funil-bar" style="width:${pct}%;background:${CORES_FUNIL[i]}">
+            <span class="bar-text">${e.val}</span>
+          </div>
+        </div>
+      </div>`
+  }).join('')
+}
+
+let chartInstance = null
+function renderChart(m) {
+  if (chartInstance) chartInstance.destroy()
+  const ctx = document.getElementById('chart').getContext('2d')
+  const labels = ['Não respondeu','Em conversa','Agendou\nnão veio','Compareceu\nnão fechou','Fechou']
+  const naoResp = m.total - m.respondeu
+  const somenteConversa = m.respondeu - m.agendou
+  const agendouNaoComp = m.agendou - m.compareceu
+  const compNaoFechou = m.compareceu - m.fechou
+  chartInstance = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{
+        data: [naoResp, somenteConversa, agendouNaoComp, compNaoFechou, m.fechou],
+        backgroundColor: ['#374151','#6366f1','#818cf8','#a78bfa','#34d399'],
+        borderWidth: 0, hoverOffset: 4
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { color: '#9ca3af', font: { size: 11 }, padding: 10, boxWidth: 10 } }
+      }
+    }
+  })
+}
+
+function renderLeadsConversa(leads) {
+  const el = document.getElementById('leads-conversa')
+  document.getElementById('conversa-count').textContent = leads.length > 0 ? `(${leads.length})` : ''
+  if (!leads.length) { el.innerHTML = '<div class="empty">Nenhum lead em conversa ativa neste período.</div>'; return }
+  el.innerHTML = `<table class="leads-table">
+    <tr><th>Nome</th><th>Telefone</th><th>Chegada</th><th>Status</th></tr>
+    ${leads.map(l => `
+    <tr>
+      <td>${l.nome}</td>
+      <td><a href="https://wa.me/55${l.telefone.replace(/\D/g,'')}" target="_blank" style="color:#6366f1;text-decoration:none">${l.telefone}</a></td>
+      <td style="color:#6b7280">${l.chegada}</td>
+      <td><span class="badge conversa">EM CONVERSA</span></td>
+    </tr>`).join('')}
+  </table>`
+}
+
+function gerarDiagnostico(m) {
+  const el = document.getElementById('diag-content')
+  document.getElementById('diag-loading').style.display = 'none'
+  el.style.display = 'block'
+
+  const itens = []
+
+  // Análise de resposta
+  if (m.respondRate < 50) {
+    itens.push({ icon: '🔴', titulo: 'Taxa de resposta crítica (' + m.respondRate + '%)', desc: `${m.total - m.respondeu} de ${m.total} leads não responderam. Reveja o primeiro contato: mensagem inicial, timing e canal. Tente abordagens diferentes nas primeiras 24h.` })
+  } else if (m.respondRate >= 80) {
+    itens.push({ icon: '✅', titulo: 'Ótima taxa de resposta (' + m.respondRate + '%)', desc: 'A abordagem inicial está funcionando bem. Mantenha o padrão de contato atual.' })
+  }
+
+  // Análise de agendamento
+  if (m.agendRate < 40 && m.respondeu > 0) {
+    itens.push({ icon: '⚠️', titulo: 'Baixa conversão resposta → agendamento (' + m.agendRate + '%)', desc: 'Muitos leads respondem mas não agendam. Trabalhe melhor a qualificação e a proposta de valor da reunião. Crie urgência e facilite o agendamento.' })
+  }
+
+  // Análise de show-up
+  if (m.showUpRate < 60 && m.agendou > 0) {
+    itens.push({ icon: '⚠️', titulo: 'Show-up rate baixo (' + m.showUpRate + '%)', desc: `${m.agendou - m.compareceu} pessoas agendaram mas não apareceram. Implemente confirmação 24h antes via WhatsApp e reforço 1h antes. Considere reuniões por vídeo para reduzir no-shows.` })
+  } else if (m.showUpRate >= 80 && m.agendou > 0) {
+    itens.push({ icon: '✅', titulo: 'Show-up rate excelente (' + m.showUpRate + '%)', desc: 'O processo de confirmação está funcionando. Ótima presença nos agendamentos.' })
+  }
+
+  // Análise de close rate
+  if (m.closeRate < 30 && m.compareceu > 0) {
+    itens.push({ icon: '🔴', titulo: 'Close rate abaixo do esperado (' + m.closeRate + '%)', desc: 'A reunião acontece mas a venda não fecha. Reveja a apresentação, o diagnóstico de necessidades e o tratamento de objeções. Implemente follow-up em até 24h após a reunião.' })
+  } else if (m.closeRate >= 50 && m.compareceu > 0) {
+    itens.push({ icon: '✅', titulo: 'Close rate saudável (' + m.closeRate + '%)', desc: 'O processo comercial está convertendo bem. Foco agora em aumentar volume de leads e show-up rate.' })
+  }
+
+  // Análise geral
+  if (m.convGeral < 5 && m.total >= 10) {
+    itens.push({ icon: '📊', titulo: 'Conversão geral abaixo de 5%', desc: 'O funil tem algum gargalo significativo. Priorize: 1) Qualidade dos leads na entrada 2) Velocidade de resposta 3) Show-up do agendamento.' })
+  } else if (m.convGeral >= 15) {
+    itens.push({ icon: '🏆', titulo: 'Conversão geral acima de 15%', desc: 'Resultado excelente. Agora é hora de escalar: aumente o volume de leads mantendo o mesmo processo comercial.' })
+  }
+
+  // Em conversa
+  if (m.emConversa.length > 0) {
+    itens.push({ icon: '💬', titulo: `${m.emConversa.length} lead${m.emConversa.length > 1 ? 's' : ''} em conversa ativa`, desc: 'Estes leads precisam de atenção agora. Defina um próximo passo claro para cada um nas próximas 24h.' })
+  }
+
+  // Dados insuficientes
+  if (m.total < 5) {
+    itens.push({ icon: 'ℹ️', titulo: 'Volume baixo de dados', desc: 'Com menos de 5 leads no período, as métricas podem não refletir a realidade. Acumule mais dados para diagnósticos mais precisos.' })
+  }
+
+  if (!itens.length) {
+    itens.push({ icon: 'ℹ️', titulo: 'Sem dados suficientes', desc: 'Adicione leads na planilha para gerar o diagnóstico automático.' })
+  }
+
+  el.innerHTML = itens.map(it => `
+    <div class="diag-item">
+      <div class="diag-icon">${it.icon}</div>
+      <div class="diag-content">
+        <div class="titulo">${it.titulo}</div>
+        <div class="desc">${it.desc}</div>
+      </div>
+    </div>`).join('')
+}
+
+async function fetchCSV(sheetsId, aba) {
+  const url = `https://docs.google.com/spreadsheets/d/${sheetsId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(aba)}`
+  const res = await fetch(url)
+  if (!res.ok) throw new Error('Erro ao buscar planilha')
+  return parseCSV(await res.text())
+}
+
+async function init() {
+  const params = new URLSearchParams(window.location.search)
+  const clienteId = params.get('cliente')
+
+  if (!clienteId) {
+    document.getElementById('loading').style.display = 'none'
+    document.getElementById('error').style.display = 'flex'
+    document.getElementById('error-title').textContent = 'Cliente não especificado'
+    document.getElementById('error-msg').textContent = 'Adicione ?cliente=ID na URL. Exemplo: ?cliente=arte-azulejo'
+    return
+  }
+
+  try {
+    const base = window.location.href.split('?')[0]
+    const jsonUrl = base.replace(/\/?[^\/]*$/, '') + '/clientes.json'
+    const clientes = await fetch(jsonUrl).then(r => r.json())
+    const cliente = clientes.find(c => c.id === clienteId)
+
+    if (!cliente) {
+      throw new Error(`Cliente "${clienteId}" não encontrado em clientes.json`)
+    }
+
+    document.title = cliente.nome + ' · Funil Comercial'
+    document.getElementById('cliente-nome').textContent = cliente.nome
+
+    // Mês seletor
+    const selector = document.getElementById('mes-selector')
+    const abaAtiva = { v: cliente.abas[cliente.abas.length - 1] }
+
+    const renderMes = async (aba) => {
+      abaAtiva.v = aba
+      selector.querySelectorAll('.mes-btn').forEach(b => {
+        b.classList.toggle('ativo', b.dataset.aba === aba)
+      })
+      document.getElementById('diag-loading').style.display = 'flex'
+      document.getElementById('diag-content').style.display = 'none'
+      const rows = await fetchCSV(cliente.sheets_id, aba)
+      const m = calcularMetricas(rows)
+      renderMetrics(m)
+      renderFunil(m)
+      renderChart(m)
+      renderLeadsConversa(m.emConversa)
+      gerarDiagnostico(m)
+    }
+
+    selector.innerHTML = cliente.abas.map(a =>
+      `<button class="mes-btn${a === abaAtiva.v ? ' ativo' : ''}" data-aba="${a}">${a}</button>`
+    ).join('')
+
+    selector.addEventListener('click', e => {
+      if (e.target.classList.contains('mes-btn')) renderMes(e.target.dataset.aba)
+    })
+
+    document.getElementById('loading').style.display = 'none'
+    document.getElementById('app').style.display = 'block'
+
+    await renderMes(abaAtiva.v)
+
+  } catch (e) {
+    document.getElementById('loading').style.display = 'none'
+    document.getElementById('error').style.display = 'flex'
+    document.getElementById('error-title').textContent = 'Erro ao carregar painel'
+    document.getElementById('error-msg').textContent = e.message
+  }
+}
+
+init()
+</script>
+</body>
+</html>
